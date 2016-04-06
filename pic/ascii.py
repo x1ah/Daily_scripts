@@ -7,7 +7,6 @@ import os
 #命令行输入参数处理
 parser = argparse.ArgumentParser(description='trans picture to char')
 
-
 parser.add_argument('file')     #输入文件
 parser.add_argument('-o', '--output')   #输出文件
 parser.add_argument('--width', type = int, default = 80) #输出字符画宽
