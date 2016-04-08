@@ -16,6 +16,13 @@ def GetVedio(html):
     get_list = re.findall(temp_patt, html)
     return get_list
 
+
+def callbackfunc(already, a_ll, remote):
+    persent = 100.0 * already * a_ll / remote
+    if persent > 100:
+        persent = 100
+    print '%.2f%%\r' % persent
+
 def main(num):
     html = GetHtml('http://music.163.com/mv?id=%s' % num)
     vedio_list = GetVedio(html)
@@ -27,9 +34,10 @@ def main(num):
     if os.path.exists(store_filename):
         print 'the MV already exists!'
     else:
+        os.mkdir('%s/' % songer)
         print 'Downloading The MV.....', store_filename
-        os.mkdir(songer)
-        urllib.urlretrieve(vedioUrls[0], store_filename)
+        #os.mkdir(songer)
+        urllib.urlretrieve(vedioUrls[0], store_filename, callbackfunc)
         print 'Downloading completed....'
 
 if __name__ == '__main__':
