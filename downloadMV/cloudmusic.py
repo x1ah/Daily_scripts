@@ -21,7 +21,7 @@ def callbackfunc(already, a_ll, remote):
     persent = 100.0 * already * a_ll / remote
     if persent > 100:
         persent = 100
-    print '%.2f%%\r' % persent
+    print '%.2f%%\r' % persent, '已经下载： ', a*b, '文件大小: ', c
 
 def main(num):
     html = GetHtml('http://music.163.com/mv?id=%s' % num)
