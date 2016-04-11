@@ -5,12 +5,12 @@ import urllib
 import re
 import os
 
-def GetHtml(url):
+def gethtml(url):
     page = urllib.urlopen(url)
     html = page.read()
     return html
 
-def GetVedio(html):
+def getvedio(html):
     mvpatt = r'hurl=(.+?\.jpg)'
     temp_patt = re.compile(mvpatt)
     get_list = re.findall(temp_patt, html)
@@ -24,8 +24,8 @@ def callbackfunc(already, a_ll, remote):
     print '%.2f%%\r' % persent, '已经下载： ', a*b, '文件大小: ', c
 
 def main(num):
-    html = GetHtml('http://music.163.com/mv?id=%s' % num)
-    vedio_list = GetVedio(html)
+    html = gethtml('http://music.163.com/mv?id=%s' % num)
+    vedio_list = getvedio(html)
     vedioUrls = vedio_list[0].split("&")
     songer = vedioUrls[4].split('=')[1].decode('utf-8').strip().replace(' ', '-')
     song_name = vedioUrls[3].split('=')[1].decode('utf-8').strip().replace(' ', '-')
