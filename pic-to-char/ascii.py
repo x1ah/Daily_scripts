@@ -22,7 +22,6 @@ OUTPUT = args.output
 
 ascii_char = list("@#B%+&WM$×oahkbdpqwmZO0QLCJUYXzcvunxrjft/\|()1{}[]?-_+~<>i!lI;:,\"^`'. ")
 
-
 # 将256灰度映射到70个字符上
 def get_char(r,b,g,alpha = 256):
     if alpha == 0:
