@@ -13,7 +13,7 @@ parser.add_argument('newfile')
 args = parser.parse_args()
 
 header_msg = {
-    'py': '#!/usr/bin/env python\n#coding:utf-8\n',
+    'py': '#!/usr/bin/env python\n# coding:utf-8\n',
     'c': '#include<stdio.h>\n'
 }
 
