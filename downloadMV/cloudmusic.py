@@ -1,9 +1,7 @@
 #!/usr/bin/env python
 # coding=utf-8
 
-import urllib
-import re
-import os
+import urllib, re, os
 
 
 def gethtml(url):
