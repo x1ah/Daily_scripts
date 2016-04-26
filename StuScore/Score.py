@@ -7,6 +7,11 @@ import sys
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
+def Soup(session, url):
+    html = session.get(url)
+    soup = BeautifulSoup(html.text, 'lxml')
+    return soup
+
 def login(username, pswd='0'):
     '''
     模拟登录教务系统
@@ -51,8 +56,7 @@ def get_ifo(sess):
     :return: 学生信息
     '''
     ifo_url = 'http://219.242.68.33/xuesheng/xsxx.aspx'
-    html = sess.get(ifo_url)
-    soup = BeautifulSoup(html.text, 'lxml')
+    soup = Soup(sess, ifo_url)
     data = {}
     data['a.姓名'] = soup.find(id="ctl00_ContentPlaceHolder1_lblXm").text
     data['b.身份证号'] = soup.find(id="ctl00_ContentPlaceHolder1_lblSfz").text
@@ -66,8 +70,30 @@ def get_ifo(sess):
 def get_score(username, pswd='0'):
     pass
 
-def elective(username, pswd):
-    pass
+def elective(sess):
+    eleurl = 'http://219.242.68.33/xuesheng/xsxk.aspx'
+    from_data= {
+        "__EVENTTARGET": "",
+        "__EVENTARGUMENT": "",
+        "__VIEWSTATE": "/wEPDwULLTE1NDU0NjAxMDUPZBYCZg9kFgICAw9kFgICAQ9kFgICAw8QDxYGHg1EYXRhVGV4dEZpZWxkBQRrenNtHg5EYXRhVmFsdWVGaWVsZAUDa3poHgtfIURhdGFCb3VuZGdkEBUdFzE1LTE256ys5LqM5a2m5pyf5YWs6YCJFzE1LTE256ys5LiA5a2m5pyf5YWs6YCJFzE0LTE156ys5LqM5a2m5pyf5YWs6YCJFzE0LTE156ys5LiA5a2m5pyf5YWs6YCJFzEzLTE056ys5LqM5a2m5pyf5YWs6YCJFzEzLTE056ys5LiA5a2m5pyf5YWs6YCJGeiLseivree7vOWQiOaKgOiDveWfueWFuzEXMTItMTPnrKzkuozlrabmnJ/lhazpgIkZ6Iux6K+t57u85ZCI5oqA6IO95Z+55YW7MRcxMi0xM+esrOS4gOWtpuacn+WFrOmAiRcxMS0xMuesrOS6jOWtpuacn+WFrOmAiRcxMS0xMuesrOS4gOWtpuacn+WFrOmAiRcxMC0xMeesrOS6jOWtpuacn+WFrOmAiRcxMC0xMeesrOS4gOWtpuacn+WFrOmAiRcwOS0xMOesrOS6jOWtpuacn+WFrOmAiRcwOS0xMOesrOS4gOWtpuacn+WFrOmAiRcwOC0wOeesrOS6jOWtpuacn+WFrOmAiRcwOC0wOeesrOS4gOWtpuacn+WFrOmAiRcwNy0wOOesrOS6jOWtpuacn+WFrOmAiRcwNy0wOOesrOS4gOWtpuacn+WFrOmAiRcwNi0wN+esrOS6jOWtpuacn+WFrOmAiRcwNi0wN+esrOS4gOWtpuacn+WFrOmAiRcwNS0wNuesrOS6jOWtpuacn+WFrOmAiRcwNS0wNuesrOS4gOWtpuacn+WFrOmAiRcwNC0wNeesrOS6jOWtpuacn+WFrOmAiRcwNC0wNeesrOS4gOWtpuacn+WFrOmAiRcwMy0wNOesrOS6jOWtpuacn+WFrOmAiRcwMy0wNOesrOS4gOWtpuacn+WFrOmAiRcwMi0wM+esrOS6jOWtpuacn+WFrOmAiRUdAzMyMQMzMTgDMzE0AzMxMwMzMDIDMjQzAzI0MgMyNDEDMjQwAzIzOQMyMzgDMjM3AzIzNgMyMzUDMjM0AzIzMwMyMzIDMjMxAzIzMAMyMjkDMjI4AzIyNwMyMjYDMjE2AzIxNQMyMTQDMjEzAzIxMgMyMTAUKwMdZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2cWAWZkZBgWDkNmM5ksFZPYJS+CXe3IihlDoFim1X/o3cfNS5fN",
+        "__VIEWSTATEGENERATOR": "E7E695A4",
+        "ctl00$ContentPlaceHolder1$drplKcz": '321',
+        "ctl00$ContentPlaceHolder1$btnYxkc": "查 看"
+    }
+    header = {
+        "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.86 Safari/537.36"
+    }
+    ss = sess.post(eleurl, data=from_data, headers=header)
+    soup = BeautifulSoup(ss.text, 'lxml')
+    all_num = soup.find_all('td')
+    all_item = [item.text for item in all_num]
+    indexs = all_item[1::5]
+    times = [item[4:].strip() for item in all_item[2::5]]
+    courses = [item.split()[0] for item in all_item[4::5]]
+    teachers = [item.split()[1] for item in all_item[4::5]]
+    for index, time, course, teacher in zip(indexs, times, courses, teachers):
+        s = '序号: {0}{1} | 课程组: {2}{3} | 课程名称: {4}(任课教师: {5})'.format(index, '\t', time, '\t', course, teacher)
+        print s
 
 def Quit():
     '''
@@ -98,7 +124,7 @@ def main():
             elif usr_choice == '2':
                 get_ifo(sess)
             elif usr_choice == '3':
-                elective(sess, username, pswd)
+                elective(sess)
             elif usr_choice == '4':
                 main()
                 break
