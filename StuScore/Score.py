@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup
 import requests
 import re
 import sys
+import os
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
@@ -66,9 +67,35 @@ def get_ifo(sess):
     for item in sorted(data):
         print '{0}:{1}{2}'.format(item, '-'*5, data[item])
 
-
-def get_score(username, pswd='0'):
-    pass
+def get_score(sess):
+    score_url = 'http://219.242.68.33/xuesheng/cjcx.aspx'
+    soup = Soup(sess, score_url)
+    all_scoreifo = [item.text.strip() for item in soup.find_all('td')]
+    indexs = all_scoreifo[0::10]
+    years = all_scoreifo[2::10]
+    terms = all_scoreifo[3::10]
+    units = all_scoreifo[5::10]
+    natures = all_scoreifo[7::10]
+    courses = all_scoreifo[8::10]
+    scores = all_scoreifo[9::10]
+    average = soup.find(id="ctl00_ContentPlaceHolder1_lblpjcj").text
+    total = soup.find(id="ctl00_ContentPlaceHolder1_lblKcms").text
+    credit = soup.find( id="ctl00_ContentPlaceHolder1_lblXfs").text
+    print '平均成绩:{0}\n课程门数:{1}\n已获得学分:{2}\n'.format(average, total, credit)
+    for index, year, term, unit, nature, course, score in \
+            zip(indexs, years, terms, units, natures, courses, scores):
+        # 打印对齐，使整体美观
+        if len(course) < 7:
+            s = '序号:{0}\t||课程: {1}||\t\t成绩:{2}\t 学分:{3}\t || {4} {5} {6}\n' \
+            .format(index, course, score.replace('\n', ' '), unit, year, term, nature)
+        elif len(course) <= 10:
+            s = '序号:{0}\t||课程: {1}||\t成绩:{2}\t 学分:{3}\t || {4} {5} {6}\n' \
+            .format(index, course, score.replace('\n', ' '), unit, year, term, nature)
+        else:
+            s = '序号:{0}\t||课程: {1}||成绩:{2}\t 学分:{3}\t || {4} {5} {6}\n' \
+            .format(index, course, score.replace('\n', ' '), unit, year, term, nature)
+        print s
+    print '平均成绩:{0}\n课程门数:{1}\n已获得学分:{2}\n'.format(average, total, credit)
 
 def elective(sess):
     eleurl = 'http://219.242.68.33/xuesheng/xsxk.aspx'
@@ -101,6 +128,7 @@ def Quit():
     :return: None
     '''
     print 'Quited...'
+    os.system('clear')
 
 def main():
     prompt = '''
@@ -109,7 +137,8 @@ def main():
     |   [2]个人信息             |
     |   [3]选修课               |
     |   [4]登录其他账号         |
-    |   [5]安全退出             |
+    |   [5]清除历史记录         |
+    |   [6]安全退出             |
     +===========================+
     >>> '''
     username = raw_input('学号: ')
@@ -117,22 +146,30 @@ def main():
     sess = login(username, pswd)
     if sess:
         choice = True
+        choice_dict = {
+            '1': get_score,
+            '2': get_ifo,
+            '3': elective,
+        }
         while choice:
-            usr_choice = raw_input('\r'+prompt).strip()[0]
-            if usr_choice == '1':
-                get_score(sess, username, pswd)
-            elif usr_choice == '2':
-                get_ifo(sess)
-            elif usr_choice == '3':
-                elective(sess)
-            elif usr_choice == '4':
-                main()
-                break
-            elif usr_choice == '5':
-                Quit()
-                break
-            else:
-                print 'Input incorrect..again!'
+            try:
+                usr_choice = raw_input('\r'+prompt).strip()[0]
+                os.system('clear')
+                print '*' * 80
+                if usr_choice in choice_dict:
+                    choice_dict[usr_choice](sess)
+                elif usr_choice == '4':
+                    main()
+                    choice = False
+                elif usr_choice == '5':
+                    os.system('clear')
+                elif usr_choice == '6':
+                    Quit()
+                    choice = False
+                else:
+                    print 'Input incorrect..again!'
+            except:
+                print 'Input Error..'
     else:
         cho = raw_input('Cotinue or not [n/y]: ').strip()[0]
         if cho == 'y':
@@ -141,4 +178,5 @@ def main():
             Quit()
 
 if __name__ == '__main__':
+    os.system('clear')
     main()
