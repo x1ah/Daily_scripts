@@ -12,7 +12,7 @@ args = parser.parse_args()
 
 header_msg = {
     'py': '#!/usr/bin/env python\n# coding:utf-8\n',
-    'c': '#include<stdio.h>\n'
+    'c': '#include <stdio.h>\n'
 }
 
 if os.path.exists(os.getcwd()+'/'+args.newfile):
