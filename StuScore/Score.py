@@ -142,7 +142,7 @@ def main():
     +===========================+
     >>> '''
     username = raw_input('学号: ')
-    pswd = raw_input('密码: ')
+    pswd = raw_input('密码: 00000000\b\b\b\b\b\b\b\b')
     sess = login(username, pswd)
     if sess:
         choice = True
