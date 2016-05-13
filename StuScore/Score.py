@@ -84,17 +84,20 @@ def get_score(sess):
     print '平均成绩:{0}\n课程门数:{1}\n已获得学分:{2}\n'.format(average, total, credit)
     for index, year, term, unit, nature, course, score in \
             zip(indexs, years, terms, units, natures, courses, scores):
+        s = '序号:%s\t|课程: %-20s |成绩: %-10s\t|学分: %-5s\t | %-10s %-10s %-20s\n' \
+                % (index, course.strip(), score.replace('\n', ' '), unit, year, term, nature)
+        print s,
         # 打印对齐，使整体美观
-        if len(course) < 7:
-            s = '序号:{0}\t||课程: {1}||\t\t成绩:{2}\t 学分:{3}\t || {4} {5} {6}\n' \
-            .format(index, course, score.replace('\n', ' '), unit, year, term, nature)
-        elif len(course) <= 10:
-            s = '序号:{0}\t||课程: {1}||\t成绩:{2}\t 学分:{3}\t || {4} {5} {6}\n' \
-            .format(index, course, score.replace('\n', ' '), unit, year, term, nature)
-        else:
-            s = '序号:{0}\t||课程: {1}||成绩:{2}\t 学分:{3}\t || {4} {5} {6}\n' \
-            .format(index, course, score.replace('\n', ' '), unit, year, term, nature)
-        print s
+#        if len(course) < 7:
+#            s = '序号:{0}\t||课程: {1}||\t\t成绩:{2}\t 学分:{3}\t || {4} {5} {6}\n' \
+#            .format(index, course, score.replace('\n', ' '), unit, year, term, nature)
+#        elif len(course) <= 10:
+#            s = '序号:{0}\t||课程: {1}||\t成绩:{2}\t 学分:{3}\t || {4} {5} {6}\n' \
+#            .format(index, course, score.replace('\n', ' '), unit, year, term, nature)
+#        else:
+#            s = '序号:{0}\t||课程: {1}||成绩:{2}\t 学分:{3}\t || {4} {5} {6}\n' \
+#            .format(index, course, score.replace('\n', ' '), unit, year, term, nature)
+#        print s
     print '平均成绩:{0}\n课程门数:{1}\n已获得学分:{2}\n'.format(average, total, credit)
 
 def elective(sess):
