@@ -45,10 +45,13 @@ class v2ex(object):
         :return: 获取签到奖励和余额
         '''
         BalanceHtml = sess.get('http://www.v2ex.com/balance',headers={'Referer': 'http://www.v2ex.com/balance'}).text
-        dailygold = search('\">(\d+.+的每日.+)</span', BalanceHtml).group(1)
-        print dailygold
-        with open('v2exLog.txt', 'a') as log:
-            log.write(dailygold)
+        soup = BeautifulSoup(BalanceHtml, 'lxml')
+        dailygold = soup.find('td', {'class': 'd', 'style': 'border-right: none;'}).text
+        return dailygold
+
+    def writelog(self, des):
+        with open(self.usrname+'v2exLog.txt', 'a') as log:
+            log.write(des.encode('gbk')+'\n')
             log.write('*'*30)
             print '写入日志成功...'
 
@@ -59,9 +62,11 @@ class v2ex(object):
         u = MSoup.find('input', {"type": 'button'})['onclick'].split('\'')[1]
         RealUrl = 'http://www.v2ex.com' + u
         res = sess.get(RealUrl, headers={'Referer': 'http://www.v2ex.com/mission/daily'})
+        des = self.balance(sess)
+        print des
         if res.text.find(u'已成功领取每日登录奖励') > 0:
             print '已成功领取每日登录奖励...'
-            self.balance(sess)
+            self.writelog(des)
         else:
             print '已经领取过每日登录奖励...'
 
@@ -73,7 +78,7 @@ if __name__ == '__main__':
         sess = foo.login()
         if sess[1] is True:
             foo.daily(sess[0])
-            sleep(86400)
+            break;
         else:
             break
 
