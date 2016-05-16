@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding:utf-8
 import requests
-from re import search
 from bs4 import BeautifulSoup
 from time import sleep
 
