@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 # coding:utf-8
-import requests
+import requests, time
 from bs4 import BeautifulSoup
-from time import sleep
+import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
 
 
 class v2ex(object):
@@ -50,7 +52,8 @@ class v2ex(object):
 
     def writelog(self, des):
         with open(self.usrname+'v2exLog.txt', 'a') as log:
-            log.write(des.encode('gbk')+'\n')
+            log.write(time.ctime())
+            log.write(des+'\n')
             log.write('*'*30)
             print '写入日志成功...'
 
@@ -77,8 +80,6 @@ if __name__ == '__main__':
         sess = foo.login()
         if sess[1] is True:
             foo.daily(sess[0])
-            break;
-        else:
-            break
+#            time.sleep(86400)
 
 
