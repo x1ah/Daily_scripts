@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # coding:utf-8
-import requests, time
+import requests, time, re
 from bs4 import BeautifulSoup
 import sys
 reload(sys)
@@ -46,8 +46,7 @@ class v2ex(object):
         :return: 获取签到奖励和余额
         '''
         BalanceHtml = sess.get('http://www.v2ex.com/balance',headers={'Referer': 'http://www.v2ex.com/balance'}).text
-        soup = BeautifulSoup(BalanceHtml, 'lxml')
-        dailygold = soup.find('td', {'class': 'd', 'style': 'border-right: none;'}).text
+        dailygold = re.findall(u'>(\d+.+的每日.+)</span', BalanceHtml)[0]
         return dailygold
 
     def writelog(self, des):
