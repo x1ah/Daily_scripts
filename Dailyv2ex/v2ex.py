@@ -74,11 +74,12 @@ class v2ex(object):
 if __name__ == '__main__':
     usrname = raw_input('用户名: ')
     usrpswd = raw_input('密码: ')
-    while True:
-        foo = v2ex(usrname, usrpswd)
+    foo = v2ex(usrname, usrpswd)
+    try:
         sess = foo.login()
         if sess[1] is True:
             foo.daily(sess[0])
-#            time.sleep(86400)
-
+    except:
+        print '登录失败...'
+        print sys.exc_info()
 
