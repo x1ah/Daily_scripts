@@ -26,13 +26,13 @@ class v2ex(object):
         usrnamecode = LoginSoup.find('input', {'class': 'sl'})['name']
         usrpswdcode = LoginSoup.find('input', {'type': 'password'})['name']
         once = LoginSoup.find('input', {'name': 'once'})['value']
-        from_data = {
+        form_data = {
             usrnamecode: self.usrname,
             usrpswdcode: self.usrpswd,
             'once': once,
             'next': '/'
             }
-        sess.post('http://www.v2ex.com/signin', from_data, headers=self.headers)
+        sess.post('http://www.v2ex.com/signin', form_data, headers=self.headers)
         sethtml = sess.get('http://www.v2ex.com/settings', headers=self.headers)
         soup = BeautifulSoup(sethtml.text, 'lxml')
         email = soup.find('input', {'type': 'email'})['value']
