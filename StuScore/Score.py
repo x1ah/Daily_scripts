@@ -27,7 +27,7 @@ class score(object):
         :return: 登录状态
         '''
         login_url = 'http://219.242.68.33/Login.aspx'
-        from_data = {
+        form_data = {
             "ToolkitScriptManager1_HiddenField": "",
             "__EVENTTARGET": "",
             "__EVENTARGUMENT": "",
@@ -44,7 +44,7 @@ class score(object):
         }
         self.headers = header
         s = requests.session()
-        response = s.post(url=login_url, data=from_data, headers=header)
+        response = s.post(url=login_url, data=form_data, headers=header)
         response_text = response.text
         if response_text.find('个人资料') > 0:
             print '登录成功！'
@@ -97,7 +97,7 @@ class score(object):
 
     def elective(self, sess):
         eleurl = 'http://219.242.68.33/xuesheng/xsxk.aspx'
-        from_data= {
+        form_data= {
             "__EVENTTARGET": "",
             "__EVENTARGUMENT": "",
             "__VIEWSTATE": "/wEPDwULLTE1NDU0NjAxMDUPZBYCZg9kFgICAw9kFgICAQ9kFgICAw8QDxYGHg1EYXRhVGV4dEZpZWxkBQRrenNtHg5EYXRhVmFsdWVGaWVsZAUDa3poHgtfIURhdGFCb3VuZGdkEBUdFzE1LTE256ys5LqM5a2m5pyf5YWs6YCJFzE1LTE256ys5LiA5a2m5pyf5YWs6YCJFzE0LTE156ys5LqM5a2m5pyf5YWs6YCJFzE0LTE156ys5LiA5a2m5pyf5YWs6YCJFzEzLTE056ys5LqM5a2m5pyf5YWs6YCJFzEzLTE056ys5LiA5a2m5pyf5YWs6YCJGeiLseivree7vOWQiOaKgOiDveWfueWFuzEXMTItMTPnrKzkuozlrabmnJ/lhazpgIkZ6Iux6K+t57u85ZCI5oqA6IO95Z+55YW7MRcxMi0xM+esrOS4gOWtpuacn+WFrOmAiRcxMS0xMuesrOS6jOWtpuacn+WFrOmAiRcxMS0xMuesrOS4gOWtpuacn+WFrOmAiRcxMC0xMeesrOS6jOWtpuacn+WFrOmAiRcxMC0xMeesrOS4gOWtpuacn+WFrOmAiRcwOS0xMOesrOS6jOWtpuacn+WFrOmAiRcwOS0xMOesrOS4gOWtpuacn+WFrOmAiRcwOC0wOeesrOS6jOWtpuacn+WFrOmAiRcwOC0wOeesrOS4gOWtpuacn+WFrOmAiRcwNy0wOOesrOS6jOWtpuacn+WFrOmAiRcwNy0wOOesrOS4gOWtpuacn+WFrOmAiRcwNi0wN+esrOS6jOWtpuacn+WFrOmAiRcwNi0wN+esrOS4gOWtpuacn+WFrOmAiRcwNS0wNuesrOS6jOWtpuacn+WFrOmAiRcwNS0wNuesrOS4gOWtpuacn+WFrOmAiRcwNC0wNeesrOS6jOWtpuacn+WFrOmAiRcwNC0wNeesrOS4gOWtpuacn+WFrOmAiRcwMy0wNOesrOS6jOWtpuacn+WFrOmAiRcwMy0wNOesrOS4gOWtpuacn+WFrOmAiRcwMi0wM+esrOS6jOWtpuacn+WFrOmAiRUdAzMyMQMzMTgDMzE0AzMxMwMzMDIDMjQzAzI0MgMyNDEDMjQwAzIzOQMyMzgDMjM3AzIzNgMyMzUDMjM0AzIzMwMyMzIDMjMxAzIzMAMyMjkDMjI4AzIyNwMyMjYDMjE2AzIxNQMyMTQDMjEzAzIxMgMyMTAUKwMdZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2cWAWZkZBgWDkNmM5ksFZPYJS+CXe3IihlDoFim1X/o3cfNS5fN",
@@ -105,7 +105,7 @@ class score(object):
             "ctl00$ContentPlaceHolder1$drplKcz": '321',
             "ctl00$ContentPlaceHolder1$btnYxkc": "查 看"
         }
-        ss = sess.post(eleurl, data=from_data, headers=self.headers)
+        ss = sess.post(eleurl, data=form_data, headers=self.headers)
         soup = BeautifulSoup(ss.text, 'lxml')
         all_num = soup.find_all('td')
         all_item = [item.text for item in all_num]
