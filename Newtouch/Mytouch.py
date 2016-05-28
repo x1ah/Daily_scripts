@@ -22,16 +22,13 @@ else:
         newfile_type = args.newfile.split('.')[-1]
 
         if newfile_type in header_msg:
-            os.path.mkfi
-            f = open(args.newfile, 'w')
-            print '\tadding header msg...'
-            f.write(header_msg[newfile_type])
-            f.close()
+            with open(args.newfile, 'w') as f:
+                print '\tadding header msg...'
+                f.write(header_msg[newfile_type])
             msg = 'created %s' % args.newfile
             print msg.center(40, '*')
         else:
-            temp = open(args.newfile, 'w')
-            temp.close()
+            os.system('touch %s' % args.newfile)
             print '\tcreated ', args.newfile
     else:
         temp = open(args.newfile, 'w')

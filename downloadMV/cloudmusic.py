@@ -21,7 +21,7 @@ def callbackfunc(already, a_ll, remote):
     persent = 100.0 * already * a_ll / remote
     if persent > 100:
         persent = 100
-    print '%.2f%%\r' % persent, '已经下载： ', already*a_ll, '文件大小: ', remote
+    print('%.2f%%\r' % persent, '已经下载： ', already*a_ll, '文件大小: ', remote)
 
 
 def main(num):
@@ -35,14 +35,17 @@ def main(num):
     store_filename = r'%s/%s.mp4' % (songer, song_name)
     # store_filename = store_filename_temp.replace(' ', '-')
     if os.path.exists(store_filename):
-        print 'the MV already exists!'
+        print('the MV already exists!')
     else:
         os.mkdir('%s/' % songer)
-        print 'Downloading The MV.....', store_filename
+        print('Downloading The MV.....', store_filename)
         # os.mkdir(songer)
         urllib.urlretrieve(vedioUrls[0], store_filename, callbackfunc)
-        print 'Downloading completed....'
+        print('Downloading completed....')
 
 if __name__ == '__main__':
-    num = raw_input('Input the MV num: ')
+    try:
+        num = raw_input('Input the MV num: ')
+    except:
+        num = input('Input the MV num: ')
     main(num)
