@@ -15,13 +15,14 @@ header_msg = {
     'c': '#include <stdio.h>\n'
 }
 
-if os.path.exists(os.getcwd()+'/'+args.newfile):
+if os.path.isfile(os.getcwd()+'/'+args.newfile):
     print '\tfile already exists...'
 else:
     if len(args.newfile.split('.')) == 2:
         newfile_type = args.newfile.split('.')[-1]
 
         if newfile_type in header_msg:
+            os.path.mkfi
             f = open(args.newfile, 'w')
             print '\tadding header msg...'
             f.write(header_msg[newfile_type])
