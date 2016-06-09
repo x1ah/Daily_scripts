@@ -71,6 +71,7 @@ class score(object):
         data['e.院系'] = soup.find(id="ctl00_ContentPlaceHolder1_collegeName").text
         for item in sorted(data):
             print '{0}:{1}{2}'.format(item, '-'*5, data[item])
+        return data
 
     def get_score(self, sess):
         score_url = 'http://219.242.68.33/xuesheng/cjcx.aspx'
