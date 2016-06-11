@@ -46,7 +46,7 @@ class score(object):
         s = requests.session()
         response = s.post(url=login_url, data=form_data, headers=header)
         response_text = response.text
-        if response_text.find('个人资料') > 0:
+        if response_text.find(u'个人资料') > 0:
             ifo = '登录成功！'
             status = s
         elif response_text.find('密码不正确') > 0:
