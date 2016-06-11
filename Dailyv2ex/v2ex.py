@@ -3,9 +3,6 @@
 import requests, time, re
 from bs4 import BeautifulSoup
 import sys
-reload(sys)
-sys.setdefaultencoding('utf-8')
-
 
 class v2ex(object):
     headers = {
