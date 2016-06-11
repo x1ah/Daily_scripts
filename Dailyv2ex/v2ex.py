@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 # coding:utf-8
-import requests, time, re
+import requests, time, re, sys
 from bs4 import BeautifulSoup
-import sys
 
 class v2ex(object):
     headers = {
