@@ -9,9 +9,10 @@ sys.setdefaultencoding('utf-8')
 
 
 class score(object):
-    def __init__(self, usrname='0', usrpswd='0'):
+    def __init__(self, usrname='0', usrpswd='0', display=True):
         self.usrname = usrname
         self.usrpswd = usrpswd
+        self.display = display
 
     def Soup(self, session, url):
         html = session.get(url)
@@ -46,14 +47,17 @@ class score(object):
         response = s.post(url=login_url, data=form_data, headers=header)
         response_text = response.text
         if response_text.find('个人资料') > 0:
-            print '登录成功！'
-            return s
+            ifo = '登录成功！'
+            status = s
         elif response_text.find('密码不正确') > 0:
-            print '密码错误...请重试...'
-            return False
+            ifo = '密码错误...请重试...'
+            status = False
         else:
-            print '登录失败...请重试...'
-            return False
+            ifo = '登录失败...请重试...'
+            status = False
+        if self.display is True:
+            print ifo
+        return status
 
     def get_ifo(self, sess):
         '''
@@ -69,8 +73,10 @@ class score(object):
         data['c.学号'] = soup.find(id="ctl00_ContentPlaceHolder1_lblXh").text
         data['d.班级'] = soup.find(id="ctl00_ContentPlaceHolder1_className").text
         data['e.院系'] = soup.find(id="ctl00_ContentPlaceHolder1_collegeName").text
-        for item in sorted(data):
-            print '{0}:{1}{2}'.format(item, '-'*5, data[item])
+        if self.display is True:
+            for item in sorted(data):
+                print '{0}:{1}{2}'.format(item, '-'*5, data[item])
+
         return data
 
     def get_score(self, sess):
