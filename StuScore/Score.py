@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # coding:utf-8
 from bs4 import BeautifulSoup
-import requests
+from prettytable import PrettyTable
+import requests, os
 import sys
-import os
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
@@ -59,6 +59,15 @@ class score(object):
             print ifo
         return status
 
+    def tableprint(self, title, conts):
+        table = PrettyTable(title)
+        table.padding_width = 2
+        if type(conts[0]) is list:
+            [table.add_row(cont) for cont in conts]
+        else:
+            table.add_row(conts)
+        print(table)
+
     def get_ifo(self, sess):
         '''
         通过登录会话session获取学生信息
@@ -74,8 +83,9 @@ class score(object):
         data['d.班级'] = soup.find(id="ctl00_ContentPlaceHolder1_className").text
         data['e.院系'] = soup.find(id="ctl00_ContentPlaceHolder1_collegeName").text
         if self.display is True:
-            for item in sorted(data):
-                print '{0}:{1}{2}'.format(item, '-'*5, data[item])
+            tabletitle = [item[2:] for item in sorted(data.keys())]
+            cont = [data[item] for item in sorted(data.keys())]
+            self.tableprint(tabletitle, cont)
 
         return data
 
@@ -93,13 +103,16 @@ class score(object):
         average = soup.find(id="ctl00_ContentPlaceHolder1_lblpjcj").text
         total = soup.find(id="ctl00_ContentPlaceHolder1_lblKcms").text
         credit = soup.find( id="ctl00_ContentPlaceHolder1_lblXfs").text
-        print '平均成绩:{0}\n课程门数:{1}\n已获得学分:{2}\n'.format(average, total, credit)
+
+        tabletitle = ['序号', '课程', '成绩', '学分', '学年', '学期', '性质']
+        conts = []
+
         for index, year, term, unit, nature, course, score in \
                 zip(indexs, years, terms, units, natures, courses, scores):
-            s = '序号:%s\t|课程: %-20s |成绩: %-10s\t|学分: %-5s\t | %-10s %-10s %-20s\n' \
-                    % (index, course.strip(), score.replace('\n', ' '), unit, year, term, nature)
-            print s,
-        print '平均成绩:{0}\n课程门数:{1}\n已获得学分:{2}\n'.format(average, total, credit)
+            temp = [index, course.strip(), score.replace('\n', ''), unit, year, term, nature]
+            conts.append(temp)
+        self.tableprint(tabletitle, conts)
+        self.tableprint(['平均成绩','课程门数', '已获得学分'], [[average, total, credit]])
 
     def elective(self, sess):
         eleurl = 'http://219.242.68.33/xuesheng/xsxk.aspx'
@@ -119,9 +132,12 @@ class score(object):
         times = [item[4:].strip() for item in all_item[2::5]]
         courses = [item.split()[0] for item in all_item[4::5]]
         teachers = [item.split()[1] for item in all_item[4::5]]
+        tabletitle = ['序号', '课程组', '课程名称', '任课教师']
+        conts = []
         for index, time, course, teacher in zip(indexs, times, courses, teachers):
-            s = '序号: {0}{1} | 课程组: {2}{3} | 课程名称: {4}(任课教师: {5})'.format(index, '\t', time, '\t', course, teacher)
-            print s
+            temp = [index, time, course, teacher]
+            conts.append(temp)
+        self.tableprint(tabletitle, conts)
 
     def Quit(self):
         '''
@@ -153,27 +169,25 @@ class score(object):
                 '3': self.elective,
             }
             while choice is True:
-                try:
-                    usr_choice = raw_input('\r'+prompt).strip()[0]
+#                try:
+                usr_choice = raw_input('\r'+prompt).strip()[0]
+                os.system('clear')
+                print '*' * 80
+                if usr_choice in choice_dict:
+                    choice_dict[usr_choice](sess)
+                elif usr_choice == '4':
+                    self.main()
+                    choice = False
+                elif usr_choice == '5':
                     os.system('clear')
-                    print '*' * 80
-                    if usr_choice in choice_dict:
-                        choice_dict[usr_choice](sess)
-                    elif usr_choice == '4':
-                        self.main()
-                        choice = False
-                    elif usr_choice == '5':
-                        os.system('clear')
-                    elif usr_choice == '6':
-                        self.Quit()
-                        choice = False
-                    else:
-                        print 'Input incorrect..again!'
-                except:
-                    print 'Input Error..'
+                elif usr_choice == '6':
+                    self.Quit()
+                    choice = False
+                else:
+                    print 'Input incorrect..again!'
         else:
-            cho = raw_input('Cotinue or not [n/y]: ').strip()[0]
-            if cho == 'y':
+            cho = raw_input('[q] to Quit.')
+            if cho != 'q':
                 self.main()
             else:
                 self.Quit()
