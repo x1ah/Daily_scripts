@@ -150,12 +150,12 @@ class score(object):
     def main(self):
         prompt = '''
         +===========================+
-        |   [1]查成绩               |
-        |   [2]个人信息             |
-        |   [3]选修课               |
-        |   [4]登录其他账号         |
-        |   [5]清除历史记录         |
-        |   [6]安全退出             |
+        |   [0]查成绩               |
+        |   [1]个人信息             |
+        |   [2]选修课               |
+        |   [3]登录其他账号         |
+        |   [4]清除历史记录         |
+        |   [5]安全退出             |
         +===========================+
         >>> '''
         self.usrname = raw_input('学号: ')
@@ -164,23 +164,22 @@ class score(object):
         if sess:
             choice = True
             choice_dict = {
-                '1': self.get_score,
-                '2': self.get_ifo,
-                '3': self.elective,
+                '0': self.get_score,
+                '1': self.get_ifo,
+                '2': self.elective,
             }
             while choice is True:
 #                try:
                 usr_choice = raw_input('\r'+prompt).strip()[0]
                 os.system('clear')
-                print '*' * 80
                 if usr_choice in choice_dict:
                     choice_dict[usr_choice](sess)
-                elif usr_choice == '4':
+                elif usr_choice == '3':
                     self.main()
                     choice = False
-                elif usr_choice == '5':
+                elif usr_choice == '4':
                     os.system('clear')
-                elif usr_choice == '6':
+                elif usr_choice == '5':
                     self.Quit()
                     choice = False
                 else:
