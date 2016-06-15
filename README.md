@@ -1,6 +1,6 @@
 # Python-project
 
-> 日常使用小脚本.
+> 日常小脚本.
 懒人欢乐多
 
 - Dailyv2ex
