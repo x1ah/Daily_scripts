@@ -3,4 +3,9 @@
 - 依赖:
     - `Python2`
     - `BeautifulSoup`
+        - `pip install BeautifulSoup`
     - `requests`
+        - `pip install requests`
+    - `prettytable`
+        - `pip install prettytable`
+
