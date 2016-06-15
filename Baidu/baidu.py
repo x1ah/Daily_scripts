@@ -110,7 +110,7 @@ class baidu(object):
                 sleep(2)
                 status = self.markSingle(sess, single, cookie)
                 status.append(exercise[index])
-                status.append(leavel[index])
+                status.append(level[index])
                 table.add_row(status)
                 print status[0], status[1]
         print table
