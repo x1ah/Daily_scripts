@@ -20,7 +20,7 @@ headers = {
 
 def getcookies():
     '''获取百度 cookies, 并写入文件.'''
-    cookiefile = 'cookie.txt'
+    cookiefile = 'cookies.txt'
     jar = cookielib.LWPCookieJar(cookiefile)
     sess = requests.session()
     sess.headers = headers
@@ -113,6 +113,7 @@ class baidu(object):
                 status.append(level[index])
                 table.add_row(status)
                 print status[0], status[1]
+            sleep(5)
         print table
 
 if __name__ == '__main__':
