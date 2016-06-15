@@ -1,6 +1,6 @@
 # Python-project
 
-日常使用小脚本.
+> 日常使用小脚本.
 懒人欢乐多
 
 - Dailyv2ex
@@ -10,7 +10,7 @@
 - DownloadMV
     - 网易云音乐MV下载
 - Newtouch
-    - Linux 新建文件添加头部信息(http://xiahei.github.io/2016/05/16/Newtouch/)
+    - [Linux 新建文件添加头部信息](http://xiahei.github.io/2016/05/16/Newtouch/)
 - StuScore
     - [CUMTB 学生成绩信息查询](http://xiahei.github.io/2016/02/22/CUMTB/)
 - pic-to-char
