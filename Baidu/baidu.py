@@ -2,17 +2,15 @@
 # coding:utf-8
 import requests, cookielib, re
 from prettytable import PrettyTable
-from time import sleep
 from bs4 import BeautifulSoup
-
-headers = {
-    "User-Agent":
-    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36\
-    (KHTML, like Gecko) Chrome/51.0.2704.84 Safari/537.36",
-}
 
 def getcookies():
     '''获取百度 cookies, 并写入文件.'''
+    headers = {
+        "User-Agent":
+        "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36\
+        (KHTML, like Gecko) Chrome/51.0.2704.84 Safari/537.36",
+    }
     cookiefile = 'cookies.txt'
     jar = cookielib.LWPCookieJar(cookiefile)
     sess = requests.session()
@@ -24,13 +22,6 @@ def getcookies():
 
 class baidu(object):
     '''贴吧签到'''
-
-
-    simple_headers = {
-        "User-Agent":
-            "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36\
-        (KHTML, like Gecko) Chrome/51.0.2704.84 Safari/537.36"
-        }
 
     markUrl = 'http://tieba.baidu.com/mo/m/sign?\
         tbs=79f03dacf896e9fc1466052875&fid=552164&kw='      # 签到url
@@ -57,7 +48,6 @@ class baidu(object):
         }
         loginUrl = 'https://passport.baidu.com/v2/api/?login'
         sess = requests.session()
-#        sess.headers = self.simple_headers
         sess.post(loginUrl, data=form_data, cookies=cookie)
         usrInfo = sess.get('http://tieba.baidu.com/f/user/json_userinfo').text
         if usrInfo == 'null':
@@ -73,8 +63,7 @@ class baidu(object):
         html = sess.get(url).text
         soup = BeautifulSoup(html, 'html.parser')
         status = soup.select('body > div > span')[0].text
-        res = status
-        return res
+        return status
 
     def get_info(self, sess):
         '''获取个人关注贴吧，以及各贴吧经验，等级并返回'''
@@ -105,12 +94,12 @@ class baidu(object):
         exercises = temp[2]
         table.add_column(u'经验', exercises)
         table.add_column(u'等级', levels)
-
         print table
+        print u'共{0}个吧'.format(len(levels))
 
 if __name__ == '__main__':
-    usrname = '15279473578'#15650700313'#raw_input('用户名: ')
-    pswd = 'my2085145'#199666tb'#raw_input('密码: ')
+    usrname = raw_input('手机/邮箱/用户名: ')
+    pswd = raw_input('密码: ')
     cookie = getcookies()
     tieba = baidu(cookie)
     token = tieba.get_token()
