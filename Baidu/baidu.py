@@ -57,7 +57,7 @@ class baidu(object):
             print '登录成功!'
             return sess
 
-    def markSingle(self, sess, kw):#, cookie):
+    def markSingle(self, sess, kw):
         '''单个吧签到'''
         url = self.markUrl + kw
         html = sess.get(url).text
@@ -103,6 +103,5 @@ if __name__ == '__main__':
     cookie = getcookies()
     tieba = baidu(cookie)
     token = tieba.get_token()
-    tieba = baidu(cookie)
     res = tieba.login(token, usrname, pswd, cookie)
     tieba.markAllLikes(res)
