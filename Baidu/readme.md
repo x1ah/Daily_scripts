@@ -13,5 +13,5 @@
     - clone 代码，`python baidu.py`输入用户名，密码即可。
 
 - result:
-![res](http://ww2.sinaimg.cn/large/005NaGmtjw1f4x82pnp4aj30ry0n24ba.jpg)
 ![res](http://ww2.sinaimg.cn/large/005NaGmtjw1f4x83f2vdsj30x50m9153.jpg)
+![res](http://ww2.sinaimg.cn/large/005NaGmtjw1f4x82pnp4aj30ry0n24ba.jpg)
