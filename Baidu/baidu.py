@@ -101,12 +101,8 @@ class baidu(object):
         return res
 #        return [kw, res]
 
-    def markAllLikes(self, sess, cookie):
-        '''每个页的每个贴吧签到'''
-#        likeUrl = 'http://tieba.baidu.com/f/like/mylike'
-        table = PrettyTable(['贴吧', '签到状态', '经验', '等级'])
-        table.padding_width = 2
-
+    def get_info(self, sess):
+        '''获取个人关注贴吧，以及各贴吧经验，等级并返回'''
         myFavor = 'http://tieba.baidu.com/mo/m?tn=bdFBW&tab=favorite'
         html = sess.get(myFavor).text#, cookies=cookie)
         soup = BeautifulSoup(html, 'html.parser')
@@ -114,11 +110,21 @@ class baidu(object):
         kws = [item.text.split('.')[-1] for item in allLabel[::3]]
         levels = [item.text for item in allLabel[1::3]]
         exercises = [item.text for item in allLabel[2::3]]
+        return [kws, levels, exercises]
+
+    def markAllLikes(self, sess, cookie):
+        '''每个页的每个贴吧签到'''
+#        likeUrl = 'http://tieba.baidu.com/f/like/mylike'
+        table = PrettyTable(['贴吧', '签到状态', '经验', '等级'])
+        table.padding_width = 2
+
 #        print len(kw), len(level), len(exercise)
+        kws = get_info(sess)[0]
         for index, kw in enumerate(kws):
             status = self.markSingle(sess, kw)
             print kw, ' ', status
-            table.add_row([kw, status, exercises[index], levels[index]])
+
+        table.add_row([kw, status, exercises[index], levels[index]])
         print table
 #            print j, level[i], exercise[i]
 
