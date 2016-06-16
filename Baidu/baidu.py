@@ -6,13 +6,6 @@ from time import sleep
 from bs4 import BeautifulSoup
 
 headers = {
-    "Accept-Encoding": "gzip, deflate, br",
-    "Accept - Language": "zh - CN, zh;q = 0.8",
-    "Content-Type": "application/x-www-form-urlencoded",
-    'Host': 'passport.baidu.com',
-    'Origin': "http://tieba.baidu.com",
-    "Referer": "http://tieba.baidu.com/",
-    "Upgrade-Insecure-Requests": "1",
     "User-Agent":
     "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36\
     (KHTML, like Gecko) Chrome/51.0.2704.84 Safari/537.36",
@@ -30,6 +23,7 @@ def getcookies():
     return jar
 
 class baidu(object):
+    '''贴吧签到'''
 
 
     simple_headers = {
@@ -45,10 +39,9 @@ class baidu(object):
         self.cookies = cookies
 
     def get_token(self):
-        '''获取token参数'''
+        '''获取touen参数'''
         tokenUrl = 'https://passport.baidu.com/v2/api/?getapi&tpl=tb&apiver=v3'
-        response = requests.get(tokenUrl, headers=self.simple_headers,
-                                cookies=self.cookies)
+        response = requests.get(tokenUrl, cookies=self.cookies)
         json = response.text
         token = re.findall('token\" : "(\w+)\",', json)[0]
         return token
@@ -64,7 +57,7 @@ class baidu(object):
         }
         loginUrl = 'https://passport.baidu.com/v2/api/?login'
         sess = requests.session()
-        sess.headers = self.simple_headers
+#        sess.headers = self.simple_headers
         sess.post(loginUrl, data=form_data, cookies=cookie)
         usrInfo = sess.get('http://tieba.baidu.com/f/user/json_userinfo').text
         if usrInfo == 'null':
@@ -74,37 +67,19 @@ class baidu(object):
             print '登录成功!'
             return sess
 
-
-        myFavor= 'http://tieba.baidu.com/mo/m?tn=bdFBW&tab=favorite'
-
-
     def markSingle(self, sess, kw):#, cookie):
         '''单个吧签到'''
-#        markUrl = 'http://tieba.baidu.com/sign/add'
         url = self.markUrl + kw
         html = sess.get(url).text
         soup = BeautifulSoup(html, 'html.parser')
         status = soup.select('body > div > span')[0].text
-#        tbs = re.search('tbs\': "(\w+)\"', html).group(1)
-#        kw = re.search('name=\"kw\" value=\"(.+)\" ', html).group(1)
-#        form_data = {
-#            "ie": "utf-8",
-#            "kw": kw,
-#            "tbs": tbs
-#        }
-#        r = sess.post(markUrl, data=form_data, cookies=cookie)
-#        json = r.json()         # 获取返回json
-#        status = json[u'error']
-#        res = u'签到成功' if len(status) == 0 else status
         res = status
-#        print res
         return res
-#        return [kw, res]
 
     def get_info(self, sess):
         '''获取个人关注贴吧，以及各贴吧经验，等级并返回'''
         myFavor = 'http://tieba.baidu.com/mo/m?tn=bdFBW&tab=favorite'
-        html = sess.get(myFavor).text#, cookies=cookie)
+        html = sess.get(myFavor).text
         soup = BeautifulSoup(html, 'html.parser')
         allLabel = soup.find_all('td')
         kws = [item.text.split('.')[-1] for item in allLabel[::3]]
@@ -112,42 +87,26 @@ class baidu(object):
         exercises = [item.text for item in allLabel[2::3]]
         return [kws, levels, exercises]
 
-    def markAllLikes(self, sess, cookie):
+    def markAllLikes(self, sess):
         '''每个页的每个贴吧签到'''
-#        likeUrl = 'http://tieba.baidu.com/f/like/mylike'
-        table = PrettyTable(['贴吧', '签到状态', '经验', '等级'])
+        table = PrettyTable([u'贴吧', u'签到状态'])
         table.padding_width = 2
 
-#        print len(kw), len(level), len(exercise)
-        kws = get_info(sess)[0]
+        kws = self.get_info(sess)[0]
         for index, kw in enumerate(kws):
-            status = self.markSingle(sess, kw)
+            try:
+                status = self.markSingle(sess, kw)
+            except IndexError as e:
+                status = u'签到异常.'
             print kw, ' ', status
+            table.add_row([kw, status])
+        temp = self.get_info(sess)
+        levels = temp[1]
+        exercises = temp[2]
+        table.add_column(u'经验', exercises)
+        table.add_column(u'等级', levels)
 
-        table.add_row([kw, status, exercises[index], levels[index]])
         print table
-#            print j, level[i], exercise[i]
-
-#        totalPages = int(re.findall('pn=(\d+)\"', html.text)[-1])
-#
-#        for page in range(1, totalPages + 1):
-#            pageUrl = 'http://tieba.baidu.com/f/like/mylike?&pn=' + str(page)
-#            singlePageHtml = sess.get(pageUrl, cookies=cookie)
-#            bs = BeautifulSoup(singlePageHtml.text, 'html.parser')
-#            urls = [url['href'] for url in bs.select('tr > td:nth-of-type(1) > a')]
-#            allUrls = map(lambda x: 'http://tieba.baidu.com' + x, urls)
-#            exercise = [exe.text for exe in bs.select('tr > td:nth-of-type(2) > a')]
-#            level = [le.text for le in
-#                      bs.select('tr > td:nth-of-type(3) > a > div:nth-of-type(2)')]
-#            for index, single in enumerate(allUrls):
-##                sleep(5)
-#                status = self.markSingle(sess, single, cookie)
-#                status.append(exercise[index])
-#                status.append(level[index])
-#                table.add_row(status)
-#                print status[0], status[1]
-##            sleep(60)
-#        print table
 
 if __name__ == '__main__':
     usrname = '15279473578'#15650700313'#raw_input('用户名: ')
@@ -157,5 +116,4 @@ if __name__ == '__main__':
     token = tieba.get_token()
     tieba = baidu(cookie)
     res = tieba.login(token, usrname, pswd, cookie)
-#    tieba.markSingle(res, '情感')
-    tieba.markAllLikes(res, cookie)
+    tieba.markAllLikes(res)
