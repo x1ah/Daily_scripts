@@ -9,20 +9,17 @@ def gethtml(url):
     html = page.read()
     return html
 
-
 def getvedio(html):
     mvpatt = r'hurl=(.+?\.jpg)'
     temp_patt = re.compile(mvpatt)
     get_list = re.findall(temp_patt, html)
     return get_list
 
-
 def callbackfunc(already, a_ll, remote):
     persent = 100.0 * already * a_ll / remote
     if persent > 100:
         persent = 100
     print('%.2f%%\r' % persent, '已经下载： ', already*a_ll, '文件大小: ', remote)
-
 
 def main(num):
     html = gethtml('http://music.163.com/mv?id=%s' % num)
@@ -33,13 +30,11 @@ def main(num):
     song_name = vedioUrls[3].split('=')[1].decode(
         'utf-8').strip().replace(' ', '-')
     store_filename = r'%s/%s.mp4' % (songer, song_name)
-    # store_filename = store_filename_temp.replace(' ', '-')
     if os.path.exists(store_filename):
         print('the MV already exists!')
     else:
         os.mkdir('%s/' % songer)
         print('Downloading The MV.....', store_filename)
-        # os.mkdir(songer)
         urllib.urlretrieve(vedioUrls[0], store_filename, callbackfunc)
         print('Downloading completed....')
 
