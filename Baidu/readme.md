@@ -1,5 +1,6 @@
 百度贴吧自动签到小脚本.
 
+## 命令行版
 - 依赖:
     - `Python2`
     - `BeautifulSoup`
@@ -19,5 +20,6 @@
 - `tiebaGUI` 为 GUI 版，太过简陋。依赖与上一致。
     - `python Gtieba.py`
 
+## GUI版
 GUI:
 ![tieba](http://ww3.sinaimg.cn/large/005NaGmtjw1f4ymy4xytbj30cn0k8tf1.jpg)
