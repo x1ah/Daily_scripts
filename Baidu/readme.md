@@ -9,6 +9,9 @@
     - `prettytable`
         - `pip install prettytable`
 
+- `tiebaGUI` 为 GUI 版，太过简陋。依赖与上一致。
+    - `python Gtieba.py`
+
 - 使用
     - clone 代码，`python baidu.py`输入用户名，密码即可。
 
