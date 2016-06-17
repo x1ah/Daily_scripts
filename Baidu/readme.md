@@ -14,8 +14,8 @@
     - clone 代码，`python baidu.py`输入用户名，密码即可。
 
 - result:
-![res](http://ww2.sinaimg.cn/large/005NaGmtjw1f4x83f2vdsj30x50m9153.jpg)
-![res](http://ww2.sinaimg.cn/large/005NaGmtjw1f4x82pnp4aj30ry0n24ba.jpg)
+![res](http://ww4.sinaimg.cn/large/005NaGmtjw1f4yn4wrnxqj30yl08zaef.jpg)
+![res](http://ww2.sinaimg.cn/large/005NaGmtjw1f4yn4j1um9j30p007h0w5.jpg)
 
 ## GUI版
 - `tiebaGUI/` 为 GUI 版，太过简陋。依赖与上一致。
