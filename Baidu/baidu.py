@@ -97,11 +97,14 @@ class baidu(object):
         print table
         print u'共{0}个吧'.format(len(levels))
 
-if __name__ == '__main__':
-    usrname = raw_input('手机/邮箱/用户名: ')
-    pswd = raw_input('密码: ')
+def start(usrname, pswd):
     cookie = getcookies()
     tieba = baidu(cookie)
     token = tieba.get_token()
     res = tieba.login(token, usrname, pswd, cookie)
     tieba.markAllLikes(res)
+
+if __name__ == '__main__':
+    usrname = raw_input('手机/邮箱/用户名: ')
+    pswd = raw_input('密码: ')
+    start(usrname, pswd)
