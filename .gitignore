@@ -1,3 +1,4 @@
 *.pyc
 *~
-/Baidu/cookies.txt
+*cookies.txt
+
