@@ -17,7 +17,7 @@ def getcookies():
     sess.headers = headers
     sess.cookies = jar
     sess.get('http://www.baidu.com/')
-    jar.save(ignore_expires=True, ignore_discard=True)
+    #jar.save(ignore_expires=True, ignore_discard=True)
     return jar
 
 class baidu(object):
@@ -87,12 +87,14 @@ class baidu(object):
                 status = self.markSingle(sess, kw)
             except IndexError as e:
                 status = u'签到异常.'
+            print kw, ' ', status
             table.add_row([kw, status])
         temp = self.get_info(sess)
         levels = temp[1]
         exercises = temp[2]
         table.add_column(u'经验', exercises)
         table.add_column(u'等级', levels)
+        print u'共{0}个吧'.format(len(levels))
         return table
 
 def start(usrname, pswd):
