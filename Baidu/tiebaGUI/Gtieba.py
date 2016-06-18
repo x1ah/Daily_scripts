@@ -31,11 +31,9 @@ def print_content():
     text_output.delete(0.0, 'end')
     text_output.insert(0.0, 'succeed!')
     text_output.insert(0.0, get_text())
-    usr.set('')
-    pswd.set('')
+
 
 tk.Button(root,text=u"开始签到", command=print_content).pack()
-print u'正在签到...'
 root.bind('<Return>', lambda event:print_content())
 
 text_output = tk.Text(root, width=500)
