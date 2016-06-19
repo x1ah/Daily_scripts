@@ -13,7 +13,7 @@
     - clone 代码，`python baidu.py`输入用户名，密码即可。
 
 - `baidu_server.py` for 服务器
-    - 添加手机号，密码，crontab.
+    - 添加手机号，密码，crontab(`01 8 * * * . /etc/profile;/usr/bin/python ***/Baidu/baidu_server.py >> ~/baidulog.txt`).
 
 - result:
 ![res](http://ww4.sinaimg.cn/large/005NaGmtjw1f4yn4wrnxqj30yl08zaef.jpg)
