@@ -50,8 +50,10 @@ class baidu(object):
         sess.post(loginUrl, data=form_data, cookies=cookie)
         usrInfo = sess.get('http://tieba.baidu.com/f/user/json_userinfo').text
         if usrInfo == 'null':
+            print 'login failed..'
             exit(0)
         else:
+            print 'login succeed!'
             return sess
 
     def markSingle(self, sess, kw):
@@ -94,12 +96,14 @@ def start(usrname, pswd):
     tieba.markAllLikes(res)
 
 if __name__ == '__main__':
-    usrname = ["手机号/邮箱/用户名"]
-    pswd = ["密码"]
-    for num, usr in enumerate(usrname):
+    usr = {
+        '****': '*****',
+        '*****': '*****'
+    }
+    for usrname in usr:
         try:
-            print time.ctime(), '-', usr, u'签到',
-            start(usr, pswd[num])
+            start(usrname, usr[usrname])
+            print time.ctime(), '-', usrname, u'签到'
         except:
-            print time.ctime(), '-', usr, u'失败'
+            print time.ctime(), '-', usrname, u'失败'
 
