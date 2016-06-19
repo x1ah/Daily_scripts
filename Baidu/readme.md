@@ -2,7 +2,6 @@
 
 ## 命令行版
 - 依赖:
-    - `Python2`
     - `BeautifulSoup`
         - `pip install bs4`
     - `requests`
