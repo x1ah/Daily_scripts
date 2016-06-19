@@ -16,7 +16,7 @@ def getcookies():
     sess = requests.session()
     sess.headers = headers
     sess.cookies = jar
-    sess.get('http://www.baidu.com/')
+    sess.get('http://tieba.baidu.com/')
     jar.save(ignore_expires=True, ignore_discard=True)
     return jar
 
