@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # coding:utf-8
-import requests, cookielib, re
+import requests, cookielib, re, time
 from prettytable import PrettyTable
 from bs4 import BeautifulSoup
 
@@ -17,7 +17,6 @@ def getcookies():
     sess.headers = headers
     sess.cookies = jar
     sess.get('http://www.baidu.com/')
-    jar.save(ignore_expires=True, ignore_discard=True)
     return jar
 
 class baidu(object):
@@ -51,10 +50,8 @@ class baidu(object):
         sess.post(loginUrl, data=form_data, cookies=cookie)
         usrInfo = sess.get('http://tieba.baidu.com/f/user/json_userinfo').text
         if usrInfo == 'null':
-            print '登录失败！'
             exit(0)
         else:
-            print '登录成功!'
             return sess
 
     def markSingle(self, sess, kw):
@@ -78,23 +75,15 @@ class baidu(object):
 
     def markAllLikes(self, sess):
         '''每个页的每个贴吧签到'''
-        table = PrettyTable([u'贴吧', u'签到状态'])
-        table.padding_width = 2
 
         kws = self.get_info(sess)[0]
         for index, kw in enumerate(kws):
             try:
                 status = self.markSingle(sess, kw)
-            except IndexError as e:
+            except IndexError:
                 status = u'签到异常.'
-            print kw, ' ', status
-            table.add_row([kw, status])
         temp = self.get_info(sess)
         levels = temp[1]
-        exercises = temp[2]
-        table.add_column(u'经验', exercises)
-        table.add_column(u'等级', levels)
-        print table
         print u'共{0}个吧'.format(len(levels))
 
 def start(usrname, pswd):
@@ -105,7 +94,12 @@ def start(usrname, pswd):
     tieba.markAllLikes(res)
 
 if __name__ == '__main__':
-    usrname = raw_input('手机/邮箱/用户名: ')
-    pswd = raw_input('密码: ')
-    start(usrname, pswd)
+    usrname = ["手机号/邮箱/用户名"]
+    pswd = ["密码"]
+    for num, usr in enumerate(usrname):
+        try:
+            print time.ctime(), '-', usr, u'签到',
+            start(usr, pswd[num])
+        except:
+            print time.ctime(), '-', usr, u'失败'
 
