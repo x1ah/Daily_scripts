@@ -97,8 +97,8 @@ def start(usrname, pswd):
 
 if __name__ == '__main__':
     usr = {
-        '****': '*****',
-        '*****': '*****'
+#        '*****': '*****',
+#        '***': '****'
     }
     for usrname in usr:
         try:
