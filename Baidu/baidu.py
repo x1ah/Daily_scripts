@@ -1,6 +1,11 @@
 #!/usr/bin/env python
 # coding:utf-8
-import requests, cookielib, re
+try:
+    import cookielib
+except:
+    import http.cookiejar as cookielib
+
+import requests, re
 from prettytable import PrettyTable
 from bs4 import BeautifulSoup
 
@@ -51,10 +56,10 @@ class baidu(object):
         sess.post(loginUrl, data=form_data, cookies=cookie)
         usrInfo = sess.get('http://tieba.baidu.com/f/user/json_userinfo').text
         if usrInfo == 'null':
-            print '登录失败！'
+            print('登录失败！')
             exit(0)
         else:
-            print '登录成功!'
+            print('登录成功!')
             return sess
 
     def markSingle(self, sess, kw):
@@ -87,15 +92,15 @@ class baidu(object):
                 status = self.markSingle(sess, kw)
             except IndexError as e:
                 status = u'签到异常.'
-            print kw, ' ', status
+            print(kw, ' ', status)
             table.add_row([kw, status])
         temp = self.get_info(sess)
         levels = temp[1]
         exercises = temp[2]
         table.add_column(u'经验', exercises)
         table.add_column(u'等级', levels)
-        print table
-        print u'共{0}个吧'.format(len(levels))
+        print(table)
+        print(u'共{0}个吧'.format(len(levels)))
 
 def start(usrname, pswd):
     cookie = getcookies()
@@ -105,7 +110,12 @@ def start(usrname, pswd):
     tieba.markAllLikes(res)
 
 if __name__ == '__main__':
-    usrname = raw_input('手机/邮箱/用户名: ')
-    pswd = raw_input('密码: ')
+    try:
+        usrname = raw_input('手机/邮箱/用户名: ')
+        pswd = raw_input('密码: ')
+    except:
+        usrname = input('手机/邮箱/用户名: ')
+        pswd = input('密码: ')
+
     start(usrname, pswd)
 
