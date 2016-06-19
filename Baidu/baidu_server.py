@@ -29,7 +29,7 @@ class baidu(object):
         self.cookies = cookies
 
     def get_token(self):
-        '''获取touen参数'''
+        '''获取token参数'''
         tokenUrl = 'https://passport.baidu.com/v2/api/?getapi&tpl=tb&apiver=v3'
         response = requests.get(tokenUrl, cookies=self.cookies)
         json = response.text
