@@ -93,7 +93,8 @@ class baidu(object):
                 status = self.markSingle(sess, kw)
             except IndexError:
                 status = u'签到异常.'
-            print(kw + ' ' + status)
+            info = u'{0} {1}'.format(kw, status)
+            print(info)
             table.add_row([kw, status])
         temp = self.get_info(sess)
         levels = temp[1]
