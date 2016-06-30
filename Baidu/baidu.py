@@ -76,7 +76,8 @@ class baidu(object):
         html = sess.get(myFavor).text
         soup = BeautifulSoup(html, 'html.parser')
         allLabel = soup.find_all('td')
-        kws = [item.text.split('.')[-1] for item in allLabel[::3]]
+        kws = [item.text.split('.')[-1].encode('utf-8').decode('utf-8') for
+               item in allLabel[::3]]
         levels = [item.text for item in allLabel[1::3]]
         exercises = [item.text for item in allLabel[2::3]]
         return [kws, levels, exercises]
@@ -90,9 +91,9 @@ class baidu(object):
         for index, kw in enumerate(kws):
             try:
                 status = self.markSingle(sess, kw)
-            except IndexError as e:
+            except IndexError:
                 status = u'签到异常.'
-            print(kw+' '+status)
+            print(kw + ' ' + status)
             table.add_row([kw, status])
         temp = self.get_info(sess)
         levels = temp[1]
@@ -101,6 +102,7 @@ class baidu(object):
         table.add_column(u'等级', levels)
         print(table)
         print(u'共{0}个吧'.format(len(levels)))
+
 
 def start(usrname, pswd):
     cookie = getcookies()
@@ -118,4 +120,3 @@ if __name__ == '__main__':
         pswd = input('密码: ')
 
     start(usrname, pswd)
-
