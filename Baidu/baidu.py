@@ -5,8 +5,8 @@ try:
 except:
     import http.cookiejar as cookielib
 
-import requests
 import re
+import requests
 from prettytable import PrettyTable
 from bs4 import BeautifulSoup
 
@@ -32,7 +32,7 @@ def get_cookies():
 class Baidu(object):
     '''贴吧签到'''
 
-    mark_url = (
+    sign_url = (
         "http://tieba.baidu.com/mo/m/sign?"
         "tbs=79f03dacf896e9fc1466052875&fid=552164&kw="
     )       # 签到url
@@ -42,8 +42,8 @@ class Baidu(object):
 
     def get_token(self):
         '''获取token参数'''
-        tokenUrl = 'https://passport.baidu.com/v2/api/?getapi&tpl=tb&apiver=v3'
-        response = requests.get(tokenUrl, cookies=self.cookies)
+        url_to_token = 'https://passport.baidu.com/v2/api/?getapi&tpl=tb&apiver=v3'
+        response = requests.get(url_to_token, cookies=self.cookies)
         json = response.text
         token = re.findall('token\" : "(\w+)\",', json)[0]
         return token
@@ -57,20 +57,20 @@ class Baidu(object):
             "username": usrname,
             "password": pswd
         }
-        loginUrl = 'https://passport.baidu.com/v2/api/?login'
+        login_url = 'https://passport.baidu.com/v2/api/?login'
         sess = requests.session()
-        sess.post(loginUrl, data=form_data, cookies=cookie)
-        usrInfo = sess.get('http://tieba.baidu.com/f/user/json_userinfo').text
-        if usrInfo == 'null':
+        sess.post(login_url, data=form_data, cookies=cookie)
+        usr_info = sess.get('http://tieba.baidu.com/f/user/json_userinfo').text
+        if usr_info == 'null':
             print('登录失败！')
             exit(0)
         else:
             print('登录成功!')
             return sess
 
-    def markSingle(self, sess, kw):
+    def sign_single_ba(self, sess, kw):
         '''单个吧签到'''
-        url = self.mark_url + kw
+        url = self.sign_url + kw
         html = sess.get(url).text
         soup = BeautifulSoup(html, 'html.parser')
         status = soup.select('body > div > span')[0].text
@@ -88,7 +88,7 @@ class Baidu(object):
         exercises = [item.text for item in allLabel[2::3]]
         return [kws, levels, exercises]
 
-    def markAllLikes(self, sess):
+    def sign_all_ba(self, sess):
         '''每个页的每个贴吧签到'''
         table = PrettyTable([u'贴吧', u'签到状态'])
         table.padding_width = 2
@@ -96,7 +96,7 @@ class Baidu(object):
         kws = self.get_info(sess)[0]
         for index, kw in enumerate(kws):
             try:
-                status = self.markSingle(sess, kw)
+                status = self.sign_single_ba(sess, kw)
             except IndexError:
                 status = '签到异常.'
             print(u'{0} {1}'.format(kw, status))
@@ -115,7 +115,7 @@ def start(usrname, pswd):
     tieba = Baidu(cookie)
     token = tieba.get_token()
     res = tieba.login(token, usrname, pswd, cookie)
-    tieba.markAllLikes(res)
+    tieba.sign_all_ba(res)
 
 if __name__ == '__main__':
     try:
