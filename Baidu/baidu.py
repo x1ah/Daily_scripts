@@ -27,7 +27,8 @@ def get_cookies():
     jar.save(ignore_expires=True, ignore_discard=True)
     return jar
 
-class baidu(object):
+
+class Baidu(object):
     '''贴吧签到'''
 
     markUrl = 'http://tieba.baidu.com/mo/m/sign?\
@@ -108,7 +109,7 @@ class baidu(object):
 
 def start(usrname, pswd):
     cookie = get_cookies()
-    tieba = baidu(cookie)
+    tieba = Baidu(cookie)
     token = tieba.get_token()
     res = tieba.login(token, usrname, pswd, cookie)
     tieba.markAllLikes(res)
