@@ -12,7 +12,7 @@ from bs4 import BeautifulSoup
 
 
 def get_cookies():
-    '''获取百度 cookies, 并写入文件.'''
+    """获取百度 cookies, 并写入文件."""
     headers = {
         "User-Agent": (
             "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36"
@@ -30,7 +30,7 @@ def get_cookies():
 
 
 class Baidu(object):
-    '''贴吧签到'''
+    """贴吧签到"""
 
     sign_url = (
         "http://tieba.baidu.com/mo/m/sign?"
@@ -41,7 +41,7 @@ class Baidu(object):
         self.cookies = cookies
 
     def get_token(self):
-        '''获取token参数'''
+        """获取token参数"""
         url_to_token = 'https://passport.baidu.com/v2/api/?getapi&tpl=tb&apiver=v3'
         response = requests.get(url_to_token, cookies=self.cookies)
         json = response.text
@@ -49,7 +49,7 @@ class Baidu(object):
         return token
 
     def login(self, token, usrname, pswd, cookie):
-        '''登录并返回状态'''
+        """登录并返回状态"""
         form_data = {
             "token": token,
             "tpl": 'tb',
@@ -69,7 +69,7 @@ class Baidu(object):
             return sess
 
     def sign_single_ba(self, sess, kw):
-        '''单个吧签到'''
+        """单个吧签到"""
         url = self.sign_url + kw
         html = sess.get(url).text
         soup = BeautifulSoup(html, 'html.parser')
@@ -77,7 +77,7 @@ class Baidu(object):
         return status
 
     def get_info(self, sess):
-        '''获取个人关注贴吧，以及各贴吧经验，等级并返回'''
+        """获取个人关注贴吧，以及各贴吧经验，等级并返回"""
         myFavor = 'http://tieba.baidu.com/mo/m?tn=bdFBW&tab=favorite'
         html = sess.get(myFavor).text
         soup = BeautifulSoup(html, 'html.parser')
@@ -89,7 +89,7 @@ class Baidu(object):
         return [kws, levels, exercises]
 
     def sign_all_ba(self, sess):
-        '''每个页的每个贴吧签到'''
+        """每个页的每个贴吧签到"""
         table = PrettyTable([u'贴吧', u'签到状态'])
         table.padding_width = 2
 
