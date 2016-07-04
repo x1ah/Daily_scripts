@@ -5,11 +5,13 @@ try:
 except:
     import http.cookiejar as cookielib
 
-import requests, re
+import requests
+import re
 from prettytable import PrettyTable
 from bs4 import BeautifulSoup
 
-def getcookies():
+
+def get_cookies():
     '''获取百度 cookies, 并写入文件.'''
     headers = {
         "User-Agent":
@@ -105,7 +107,7 @@ class baidu(object):
 
 
 def start(usrname, pswd):
-    cookie = getcookies()
+    cookie = get_cookies()
     tieba = baidu(cookie)
     token = tieba.get_token()
     res = tieba.login(token, usrname, pswd, cookie)
