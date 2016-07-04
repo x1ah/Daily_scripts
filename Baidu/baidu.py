@@ -76,7 +76,7 @@ class baidu(object):
         html = sess.get(myFavor).text
         soup = BeautifulSoup(html, 'html.parser')
         allLabel = soup.find_all('td')
-        kws = [item.text.split('.')[-1].encode('utf-8').decode('utf-8') for
+        kws = [item.text.split('.')[-1] for
                item in allLabel[::3]]
         levels = [item.text for item in allLabel[1::3]]
         exercises = [item.text for item in allLabel[2::3]]
@@ -92,9 +92,8 @@ class baidu(object):
             try:
                 status = self.markSingle(sess, kw)
             except IndexError:
-                status = u'签到异常.'
-            info = u'{0} {1}'.format(kw, status)
-            print(info)
+                status = '签到异常.'
+            print(u'{0} {1}'.format(kw, status))
             table.add_row([kw, status])
         temp = self.get_info(sess)
         levels = temp[1]
