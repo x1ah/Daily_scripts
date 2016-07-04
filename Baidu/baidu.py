@@ -14,12 +14,13 @@ from bs4 import BeautifulSoup
 def get_cookies():
     '''获取百度 cookies, 并写入文件.'''
     headers = {
-        "User-Agent":
-        "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36\
-        (KHTML, like Gecko) Chrome/51.0.2704.84 Safari/537.36",
+        "User-Agent": (
+            "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36"
+            "(KHTML, like Gecko) Chrome/51.0.2704.84 Safari/537.36"
+        )
     }
-    cookiefile = 'cookies.txt'
-    jar = cookielib.LWPCookieJar(cookiefile)
+    save_cookies_file = 'cookies.txt'
+    jar = cookielib.LWPCookieJar(save_cookies_file)
     sess = requests.session()
     sess.headers = headers
     sess.cookies = jar
@@ -31,8 +32,10 @@ def get_cookies():
 class Baidu(object):
     '''贴吧签到'''
 
-    markUrl = 'http://tieba.baidu.com/mo/m/sign?\
-        tbs=79f03dacf896e9fc1466052875&fid=552164&kw='      # 签到url
+    mark_url = (
+        "http://tieba.baidu.com/mo/m/sign?"
+        "tbs=79f03dacf896e9fc1466052875&fid=552164&kw="
+    )       # 签到url
 
     def __init__(self, cookies):
         self.cookies = cookies
@@ -67,7 +70,7 @@ class Baidu(object):
 
     def markSingle(self, sess, kw):
         '''单个吧签到'''
-        url = self.markUrl + kw
+        url = self.mark_url + kw
         html = sess.get(url).text
         soup = BeautifulSoup(html, 'html.parser')
         status = soup.select('body > div > span')[0].text
