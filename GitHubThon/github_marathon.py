@@ -2,7 +2,6 @@
 # coding:utf-8
 from os import system
 from time import ctime
-from time import sleep
 from json import loads
 from json import dumps
 
@@ -33,17 +32,16 @@ class CreatCommit(object):
 
     def git_push(self):
         system("git add .")
-        sleep(1)
-        system("git commit -m'commit from robot'")
-        sleep(1)
+        system("git commit -m'commit by robot'")
         system("git push")
 
     def run(self):
-        #try:
-        pre_json = self.read_json()
-        self.write_json(pre_json)
-        self.git_push()
-        #except:
+        try:
+            pre_json = self.read_json()
+            self.write_json(pre_json)
+            self.git_push()
+        except:
+            pass
 
 if __name__ == '__main__':
     new_commit = CreatCommit()
