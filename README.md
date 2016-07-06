@@ -9,6 +9,8 @@
     - [百度贴吧 自动签到](https://xiahei.github.io/2016/06/18/baidu-tieba/)
 - DownloadMV
     - 网易云音乐MV下载
+- GitHubThon
+    - [GitHub 马拉松防漏签](https://github.com/xiahei/Daily_scripts/blob/master/GitHubThon/README.md)
 - Newtouch
     - [Linux 新建文件添加头部信息](http://xiahei.github.io/2016/05/16/Newtouch/)
 - StuScore
