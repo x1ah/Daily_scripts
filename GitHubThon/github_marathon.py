@@ -27,7 +27,6 @@ class CreatCommit(object):
         with open('marathon.json', 'w') as new:
             new_json = dumps(pre_json, indent=4)
             new.write(new_json)
-        print new_json
         return new_json
 
     def git_push(self):
