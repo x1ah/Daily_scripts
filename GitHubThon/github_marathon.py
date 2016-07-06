@@ -31,15 +31,9 @@ class CreatCommit(object):
         return new_json
 
     def git_push(self):
-        #system("git add .")
-        #system("git commit -m'commit by robot'")
-        #system("git push")
-        with popen('git add .') as add:
-            pass
-        with popen("git commit -m'commit by robot'") as commit:
-            pass
-        with popen("git push") as push:
-            pass
+        system("git add .")
+        system("git commit -m'commit by robot'")
+        system("git push")
 
     def run(self):
         try:
