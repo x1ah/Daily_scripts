@@ -4,6 +4,7 @@ from os import system
 from time import ctime
 from time import sleep
 from json import loads
+from json import dumps
 
 
 class CreatCommit(object):
@@ -24,10 +25,11 @@ class CreatCommit(object):
         pre_json['current_time'] = ctime()
         pre_json['commit_times'] = times
         pre_json['first_robot_commit'] = start_from
-        print pre_json
         with open('marathon.json', 'w') as new:
-            new.write(str(pre_json))
-        return pre_json
+            new_json = dumps(pre_json, indent=4)
+            new.write(new_json)
+        print new_json
+        return new_json
 
     def git_push(self):
         system("git add .")
