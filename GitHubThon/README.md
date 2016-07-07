@@ -15,4 +15,6 @@ Usage:
 ```python
 python github_marathon.py
 ```
+OR
+`mara.sh` 创建`crontab`定时任务
 
