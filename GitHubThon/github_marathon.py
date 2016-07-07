@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # coding:utf-8
 import time
+import os
 from os import system
 from os import popen
 from time import ctime
@@ -12,6 +13,9 @@ class CreatCommit(object):
 
     def __init__(self):
         pass
+
+    def work_space(self):
+        os.chdir('/root/Daily_scripts/GitHubThon/')
 
     def read_json(self):
         with open('marathon.json', 'r') as file_data:
@@ -47,4 +51,5 @@ class CreatCommit(object):
 
 if __name__ == '__main__':
     new_commit = CreatCommit()
+    new_commit.work_space()
     new_commit.run()
