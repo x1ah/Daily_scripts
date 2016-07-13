@@ -1,9 +1,7 @@
 #!/usr/bin/env python
 # coding:utf-8
 import time
-import os
 from os import system
-from os import popen
 from time import ctime
 from json import loads
 from json import dumps
