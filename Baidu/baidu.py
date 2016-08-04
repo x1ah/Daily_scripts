@@ -98,7 +98,7 @@ class Baidu(object):
             try:
                 status = self.sign_single_ba(sess, kw)
             except IndexError:
-                status = '签到异常.'
+                status = u'签到异常.'
             print(u'{0} {1}'.format(kw, status))
             table.add_row([kw, status])
         temp = self.get_info(sess)
