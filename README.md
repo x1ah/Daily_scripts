@@ -6,7 +6,7 @@
 - Dailyv2ex
     - [v2ex 自动签到领金币](http://xiahei.github.io/2016/05/15/login-v2ex/)
 - Baidu
-    - [百度贴吧 自动签到(已失效，待解决)](https://xiahei.github.io/2016/06/18/baidu-tieba/)
+    - [百度贴吧 自动签到](https://xiahei.github.io/2016/06/18/baidu-tieba/)
 - DownloadMV
     - 网易云音乐MV下载
 - GitHubThon
