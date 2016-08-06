@@ -1,4 +1,4 @@
-[百度贴吧自动签到小脚本.](https://xiahei.github.io/2016/06/18/baidu-tieba/)
+[百度贴吧自动签到小脚本.](https://xiahei.github.io/2016/06/18/sign-Baidu-Tieba/)
 
 ## 命令行版
 - 依赖:

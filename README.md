@@ -4,9 +4,9 @@
 懒人欢乐多
 
 - Dailyv2ex
-    - [v2ex 自动签到领金币](http://xiahei.github.io/2016/05/15/login-v2ex/)
+    - [v2ex 自动签到领金币](http://xiahei.github.io/2016/05/15/sign-V2EX/)
 - Baidu
-    - [百度贴吧 自动签到](https://xiahei.github.io/2016/06/18/baidu-tieba/)
+    - [百度贴吧 自动签到](https://xiahei.github.io/2016/06/18/sign-Baidu-Tieba/)
 - DownloadMV
     - 网易云音乐MV下载
 - GitHubThon
