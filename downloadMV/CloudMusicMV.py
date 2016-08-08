@@ -51,10 +51,7 @@ class DownloadMV(object):
 def start():
     parser = ParseArgs()
     mv_id = parser.mv_id()
-    print mv_id
     main = DownloadMV(mv_id)
-    print main.mv_name
-    print main.mv_url
     url = main.mv_url()
     main.download(url)
 
