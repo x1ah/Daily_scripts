@@ -27,23 +27,24 @@ class ParseArgs(object):
 
 
 class DownloadMV(object):
-    def __init__(self, mv_id, _mv_url=''):
+    def __init__(self, mv_id, url=''):
         self.mv_id = mv_id
-        self._mv_url = _mv_url
+        self.url = url
 
     def mv_url(self):
         html = requests.get(
             'http://music.163.com/mv?id={0}'.format(self.mv_id)
         ).text
-        self._mv_url = re.findall('murl=(.+\.mp4)', html)[0]
-        return self._mv_url
+        self.url = re.findall('murl=(.+\.mp4)', html)[0]
+        self.mv_name = re.findall('flag_title1\">(.+)h', html)[0].replace(' ', '-')
+        return self.url
 
     def download(self, url):
         '''
         first method....
         also can urllib.urlretrieve
         '''
-        os.system('wget {0}'.format(url))
+        os.system('wget -O {0}.mp4 {1}'.format(self.mv_name, self.url))
 
 
 def start():
@@ -51,6 +52,8 @@ def start():
     mv_id = parser.mv_id()
     print mv_id
     main = DownloadMV(mv_id)
+    print main.mv_name
+    print main.mv_url
     url = main.mv_url()
     main.download(url)
 
