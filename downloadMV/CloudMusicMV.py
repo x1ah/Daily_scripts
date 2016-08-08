@@ -7,7 +7,7 @@ import requests
 import argparse
 
 
-class ParseArgs:
+class ParseArgs(object):
     '''parser command line args'''
     def __init__(self):
         pass
@@ -27,27 +27,32 @@ class ParseArgs:
 
 
 class DownloadMV(object):
-    def __init__(self, mv_id):
+    def __init__(self, mv_id, _mv_url=''):
         self.mv_id = mv_id
+        self._mv_url = _mv_url
 
     def mv_url(self):
         html = requests.get(
             'http://music.163.com/mv?id={0}'.format(self.mv_id)
         ).text
-        self.mv_url = re.findall('murl=(.+\.mp4)', html)[0]
-        return self.mv_url
+        _mv_url = re.findall('murl=(.+\.mp4)', html)[0]
+        self._mv_url = re.findall('murl=(.+\.mp4)', html)[0]
+        print 'url: ', _mv_url
+        return _mv_url
 
     def download(self):
         '''
         first method....
         also can urllib.urlretrieve
         '''
-        os.system('wget {0}'.format(self.mv_url))
+        print self._mv_url
+        os.system('wget {0}'.format(self._mv_url))
 
 
 def start():
     parser = ParseArgs()
     mv_id = parser.mv_id()
+    print mv_id
     main = DownloadMV(mv_id)
     main.download()
 
