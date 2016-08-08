@@ -57,4 +57,7 @@ def start():
 
 
 if __name__ == '__main__':
-    start()
+    try:
+        start()
+    except IndexError:
+        print('Not found MV...')
