@@ -35,18 +35,15 @@ class DownloadMV(object):
         html = requests.get(
             'http://music.163.com/mv?id={0}'.format(self.mv_id)
         ).text
-        _mv_url = re.findall('murl=(.+\.mp4)', html)[0]
         self._mv_url = re.findall('murl=(.+\.mp4)', html)[0]
-        print 'url: ', _mv_url
-        return _mv_url
+        return self._mv_url
 
-    def download(self):
+    def download(self, url):
         '''
         first method....
         also can urllib.urlretrieve
         '''
-        print self._mv_url
-        os.system('wget {0}'.format(self._mv_url))
+        os.system('wget {0}'.format(url))
 
 
 def start():
@@ -54,7 +51,8 @@ def start():
     mv_id = parser.mv_id()
     print mv_id
     main = DownloadMV(mv_id)
-    main.download()
+    url = main.mv_url()
+    main.download(url)
 
 
 if __name__ == '__main__':
