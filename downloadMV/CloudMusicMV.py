@@ -36,7 +36,8 @@ class DownloadMV(object):
             'http://music.163.com/mv?id={0}'.format(self.mv_id)
         ).text
         self.url = re.findall('murl=(.+\.mp4)', html)[0]
-        self.mv_name = re.findall('flag_title1\">(.+)h', html)[0].replace(' ', '-')
+        self.mv_name = re.findall(
+            'flag_title1\">(.+)</h', html)[0].replace(' ', '-')
         return self.url
 
     def download(self, url):
