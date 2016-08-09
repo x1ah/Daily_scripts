@@ -2,8 +2,8 @@
 # coding:utf-8
 
 import requests
-from bs4 import Beautifulsoup
-from ShowQRcode import ShowQRcode
+from bs4 import BeautifulSoup
+#from ShowQRcode import ShowQRcode
 
 class Login:
     """
@@ -28,18 +28,22 @@ class Login:
 
     def http_requests(self, method, url, form_data=None, timeout=60):
         if method == "GET":
-            reponse = self.session.get(url,
+            response = self.session.get(url,
                                        headers=self.headers,
                                        timeout=timeout)
         elif method == "POST":
-            reponse = self.session.post(url,
+            response = self.session.post(url,
                                         headers=self.headers,
                                         form_data=form_data,
                                         timeout=timeout)
         else:
+            print("NOT FOUND METHOD!")
 
-
-
+        return [response.content, response.text]
 
     def get_QRcode(self):
-        k
+        QRcode_url = 'https://ssl.ptlogin2.qq.com/ptqrshow'
+        response = self.http_requests("GET", QRcode_url)[0]
+        with open('./QRcode.png', 'w') as PNG:
+            PNG.write(response)
+
