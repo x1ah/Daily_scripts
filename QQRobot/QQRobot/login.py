@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 # coding:utf-8
 
+import json
 import random
+import cookielib
 import requests
-from bs4 import BeautifulSoup
 from ShowQRcode import ShowQRcode
 
 class Login:
@@ -35,7 +36,7 @@ class Login:
         elif method == "POST":
             response = self.session.post(url,
                                         headers=headers,
-                                        form_data=form_data,
+                                        data=form_data,
                                         timeout=timeout)
         else:
             print("NOT FOUND METHOD!")
@@ -49,6 +50,13 @@ class Login:
         with open('./QRcode.png', 'w') as PNG:
             PNG.write(response)
         return ShowQRcode('./QRcode.png').show()
+
+    def save_cookies(self):
+        cookies_file = 'cookies'
+        jar = cookielib.LWPCookieJar(cookies_file)
+        self.session.cookies = jar
+        jar.save(ignore_expires=True,
+                 ignore_discard=True)
 
     def is_login(self):
         url = ("https://ssl.ptlogin2.qq.com/ptqrlogin?webqq_type=10&"
@@ -67,7 +75,34 @@ class Login:
             "f_url=loginerroralert&strong_login=1&login_state=10&t=20131024001"
         )
         response = self.http_requests("GET", url, headers)[0]
-        return True if '登录成功' in response else False
+#        self.save_cookies()
+        return response.split(',')[4]
+#        return True if '登录成功' in response else False
 
+    def get_ptwebqq(self):
+        self.ptwebqq = self.session.cookies['ptwebqq']
+        self.uin = self.session.cookies['uin']
+        return self.ptwebqq
+
+    def get_vfwebqq_and_psessionid(self):
+        headers = self.headers
+        get_url = 'http://d1.web2.qq.com/channel/login2'
+        headers.update({
+            'Origin': 'http://d1.web2.qq.com',
+            'Referer': 'http://d1.web2.qq.com/proxy.html?v=20151105001&callback=1&id=2'
+        })
+        form_data = {
+            'r': json.dumps({
+                "ptwebqq": self.ptwebqq,
+                "clientid": 5399919,
+                "psessionid": "",
+                "status": "online"
+            })
+        }
+        res = self.http_requests('POST', get_url, headers, form_data=form_data)
+        res_dict = json.loads(str(res))
+        self.psessionid = res_dict['result']['psessionid']
+        self.vfwebqq = res_dict['result']['vfwebqq']
+        return res
 
 
