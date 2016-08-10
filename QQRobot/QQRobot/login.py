@@ -4,7 +4,7 @@
 import random
 import requests
 from bs4 import BeautifulSoup
-#from ShowQRcode import ShowQRcode
+from ShowQRcode import ShowQRcode
 
 class Login:
     """
@@ -48,6 +48,7 @@ class Login:
         response = self.http_requests("GET", QRcode_url, self.headers)[0]
         with open('./QRcode.png', 'w') as PNG:
             PNG.write(response)
+        return ShowQRcode('./QRcode.png').show()
 
     def is_login(self):
         url = ("https://ssl.ptlogin2.qq.com/ptqrlogin?webqq_type=10&"
