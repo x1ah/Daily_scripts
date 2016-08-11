@@ -94,15 +94,14 @@ class Login:
         form_data = {
             'r': json.dumps({
                 "ptwebqq": self.ptwebqq,
-                "clientid": 5399919,
+                "clientid": 53999199,
                 "psessionid": "",
                 "status": "online"
             })
         }
         res = self.http_requests('POST', get_url, headers, form_data=form_data)
-        res_dict = json.loads(str(res))
-        self.psessionid = res_dict['result']['psessionid']
-        self.vfwebqq = res_dict['result']['vfwebqq']
+#        res_dict = json.loads(str(res))
+#        self.psessionid = res_dict['result']['psessionid']
+#        self.vfwebqq = res_dict['result']['vfwebqq']
         return res
-
 
