@@ -28,16 +28,18 @@ class Login:
         self.session = requests.Session()
         # TODO: 暂不打算保存 Cookies,达到免扫码登录效果，之后再添加.
 
-    def http_requests(self, method, url, headers, form_data=None, timeout=60):
+    def http_requests(self, method, url, headers, form_data=None, cookies=None, timeout=60):
         if method == "GET":
             response = self.session.get(url,
-                                       headers=headers,
-                                       timeout=timeout)
+                                        headers=headers,
+                                        cookies=cookies,
+                                        timeout=timeout)
         elif method == "POST":
             response = self.session.post(url,
-                                        headers=headers,
-                                        data=form_data,
-                                        timeout=timeout)
+                                         headers=headers,
+                                         cookies=cookies,
+                                         data=form_data,
+                                         timeout=timeout)
         else:
             print("NOT FOUND METHOD!")
 
@@ -88,8 +90,11 @@ class Login:
         headers = self.headers
         get_url = 'http://d1.web2.qq.com/channel/login2'
         headers.update({
+            'Accept-Encoding': 'gzip, deflate',
             'Origin': 'http://d1.web2.qq.com',
-            'Referer': 'http://d1.web2.qq.com/proxy.html?v=20151105001&callback=1&id=2'
+            'Referer': 'http://d1.web2.qq.com/proxy.html?v=20151105001&callback=1&id=2',
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Host': 'd1.web2.qq.com'
         })
         form_data = {
             'r': json.dumps({
@@ -99,7 +104,8 @@ class Login:
                 "status": "online"
             })
         }
-        res = self.http_requests('POST', get_url, headers, form_data=form_data)
+        print headers, form_data
+        res = self.http_requests('POST', get_url, headers, cookies=self.session.cookies, form_data=form_data)
 #        res_dict = json.loads(str(res))
 #        self.psessionid = res_dict['result']['psessionid']
 #        self.vfwebqq = res_dict['result']['vfwebqq']
