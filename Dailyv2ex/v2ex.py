@@ -67,7 +67,7 @@ class V2ex(object):
         sign_url = 'http://www.v2ex.com' + u    # 签到 url
         res = sess.get(sign_url, headers={'Referer': 'http://www.v2ex.com/mission/daily'})
         des = self.balance(sess)
-        print des
+        print des.encode('utf-8')
         if res.text.find(u'已成功领取每日登录奖励') > 0:
             print '已成功领取每日登录奖励...'
             self.write_log(des)
@@ -83,6 +83,6 @@ if __name__ == '__main__':
         if sess[1] is True:
             foo.daily(sess[0])
     except:
-        print '登录失败...'
+        print 'error...'
         print sys.exc_info()
 
