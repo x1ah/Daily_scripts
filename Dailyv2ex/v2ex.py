@@ -39,7 +39,7 @@ class V2EX(object):
     def login(self):
         sess = requests.Session()
         html_login = sess.get('http://www.v2ex.com/signin', headers=self.headers)
-        soup_login = BeautifulSoup(html_login.text, 'html.parser')
+        soup_login = BeautifulSoup(html_login.text, 'lxml')
         usrname_code = soup_login.find('input', {'class': 'sl'})['name']
         usrpswdcode = soup_login.find('input', {'type': 'password'})['name']
         once = soup_login.find('input', {'name': 'once'})['value']
@@ -51,7 +51,7 @@ class V2EX(object):
         }
         sess.post('http://www.v2ex.com/signin', form_data, headers=self.headers)
         sethtml = sess.get('http://www.v2ex.com/settings', headers=self.headers)
-        soup = BeautifulSoup(sethtml.text, 'html.parser')
+        soup = BeautifulSoup(sethtml.text, 'lxml')
         email = soup.find('input', {'type': 'email'})['value']
         status = True if email else False
         message = '登录成功！' if status else '登录失败！'
@@ -70,7 +70,7 @@ class V2EX(object):
     def daily(self, sess):
         url_sing = 'http://www.v2ex.com/mission/daily'
         html_daily = sess.get(url_sing, headers=self.headers)
-        soup_m = BeautifulSoup(html_daily.text, 'html.parser')
+        soup_m = BeautifulSoup(html_daily.text, 'lxml')
         u = soup_m.find('input', {"type": 'button'})['onclick'].split('\'')[1]
         sign_url = 'http://www.v2ex.com' + u    # 签到 url
         res = sess.get(sign_url, headers={'Referer': 'http://www.v2ex.com/mission/daily'})
