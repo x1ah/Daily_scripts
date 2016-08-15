@@ -63,7 +63,7 @@ class V2EX(object):
         :param sess: 登录状态
         :return: 获取签到奖励和余额
         """
-        html_balance = sess.get('http://www.v2ex.com/balance',headers={'Referer': 'http://www.v2ex.com/balance'}).text
+        html_balance = sess.get('http://www.v2ex.com/balance', headers={'Referer': 'http://www.v2ex.com/balance'}).text
         today_gold = re.findall(u'>(\d+.+的每日.+)</span', html_balance)[0]
         return today_gold
 
