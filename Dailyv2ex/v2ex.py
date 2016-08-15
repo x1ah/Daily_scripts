@@ -1,13 +1,26 @@
 #!/usr/bin/env python
 # coding:utf-8
-import time
 import re
 import sys
+import logging
 import requests
 from bs4 import BeautifulSoup
 
 
-class V2ex(object):
+def _log():
+    logging.basicConfig(level=logging.DEBUG,
+                        filename='V2EX.log',
+                        format='[%(levelname)s]: [%(asctime)s]: %(message)s',
+                        datefmt='%d-%b-%Y %H:%M:%S')
+    handler = logging.StreamHandler()
+    handler.setLevel(logging.INFO)
+    formatter = logging.Formatter('[%(levelname)s-%(asctime)s]: %(message)s')
+    handler.setFormatter(formatter)
+    logging.getLogger('').addHandler(handler)
+    return logging
+
+
+class V2EX(object):
     headers = {
         'User-Agent': (
             "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
@@ -21,11 +34,12 @@ class V2ex(object):
     def __init__(self, usrname, usrpswd):
         self.usrname = usrname
         self.usrpswd = usrpswd
+        self.log = _log()
 
     def login(self):
         sess = requests.Session()
         html_login = sess.get('http://www.v2ex.com/signin', headers=self.headers)
-        soup_login = BeautifulSoup(html_login.text, 'lxml')
+        soup_login = BeautifulSoup(html_login.text, 'html.parser')
         usrname_code = soup_login.find('input', {'class': 'sl'})['name']
         usrpswdcode = soup_login.find('input', {'type': 'password'})['name']
         once = soup_login.find('input', {'name': 'once'})['value']
@@ -37,10 +51,11 @@ class V2ex(object):
         }
         sess.post('http://www.v2ex.com/signin', form_data, headers=self.headers)
         sethtml = sess.get('http://www.v2ex.com/settings', headers=self.headers)
-        soup = BeautifulSoup(sethtml.text, 'lxml')
+        soup = BeautifulSoup(sethtml.text, 'html.parser')
         email = soup.find('input', {'type': 'email'})['value']
         status = True if email else False
-        print '登录成功！' if status else '登录失败！'
+        message = '登录成功！' if status else '登录失败！'
+        self.log.info('{0} {1}'.format(self.usrname, message))
         return [sess, status]
 
     def balance(self, sess):
@@ -52,37 +67,34 @@ class V2ex(object):
         today_gold = re.findall(u'>(\d+.+的每日.+)</span', html_balance)[0]
         return today_gold
 
-    def write_log(self, des):
-        with open(self.usrname+'v2exLog.txt', 'a') as log:
-            log.write(time.ctime())
-            log.write(des+'\n')
-            log.write('*'*30)
-            print '写入日志成功...'
-
     def daily(self, sess):
         url_sing = 'http://www.v2ex.com/mission/daily'
         html_daily = sess.get(url_sing, headers=self.headers)
-        soup_m = BeautifulSoup(html_daily.text, 'lxml')
+        soup_m = BeautifulSoup(html_daily.text, 'html.parser')
         u = soup_m.find('input', {"type": 'button'})['onclick'].split('\'')[1]
         sign_url = 'http://www.v2ex.com' + u    # 签到 url
         res = sess.get(sign_url, headers={'Referer': 'http://www.v2ex.com/mission/daily'})
         des = self.balance(sess)
-        print des.encode('utf-8')
+        self.log.info(des)
         if res.text.find(u'已成功领取每日登录奖励') > 0:
-            print '已成功领取每日登录奖励...'
-            self.write_log(des)
+            self.log.info('已成功领取每日登录奖励...')
         else:
-            print '已经领取过每日登录奖励...'
+            self.log.info('已经领取过每日登录奖励...')
 
 if __name__ == '__main__':
-    usrname = raw_input('用户名: ')
-    usrpswd = raw_input('密码: ')
-    foo = V2ex(usrname, usrpswd)
+    try:
+        usrname = raw_input('用户名: ')
+        usrpswd = raw_input('密码: ')
+    except:
+        usrname = input('用户名: ')
+        usrpswd = input('密码: ')
+
+    foo = V2EX(usrname, usrpswd)
     try:
         sess = foo.login()
         if sess[1] is True:
             foo.daily(sess[0])
     except:
-        print 'error...'
-        print sys.exc_info()
+        foo.log.error('error...')
+        foo.log.error(sys.exc_info())
 
