@@ -4,5 +4,10 @@
 from Login import Login
 
 class Poll:
-    def __init__(self, session):
-        self
+    '''传进已登录的Login的一个实例'''
+    def __init__(self, instance):
+        self.instance = instance
+
+    def poll(self):
+        pass
+
