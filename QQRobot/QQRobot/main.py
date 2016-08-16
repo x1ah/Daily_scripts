@@ -2,8 +2,11 @@
 # coding:utf-8
 
 import logging
+import sys
 import time
+import json
 from Login import Login
+
 
 def log():
     logging.basicConfig(filename='QQRobot.log',
@@ -19,7 +22,19 @@ def log():
 
 LOG = log()
 
+
+def hand_msg(msg):
+    if 'error' in msg:
+        return 'None New Message'
+    msg_dict = json.loads(msg)
+    msg_content = msg_dict['result'][0]['value']['content'][-1]
+    from_uin = msg_dict['result'][0]['value']['from_uin']
+    msg_type = msg_dict['result'][0]['poll_type']
+    return [msg_content, from_uin, msg_type]
+
+
 def main():
+    send_msg = '您好,我是机器人,稍后回复您的消息,抱歉.'
     bot = Login()
     LOG.info('请扫描二维码.')
     print(bot.get_QRcode())
@@ -38,16 +53,20 @@ def main():
     LOG.info('等待消息...')
     STOP = False
     while not STOP:
+        time.sleep(1)
         try:
             msg = bot.poll()
+            msg_content, from_uin, msg_type = hand_msg(msg[0])
+            LOG.info('{0} 发来一条消息: {1}'.format(from_uin, msg_content))
+            send_status = bot.send_msg(send_msg, from_uin, msg_type)
+            LOG.info('回复 {0}: {1}'.format(from_uin, send_status))
         except KeyboardInterrupt:
             LOG.info('See You...')
             STOP = True
         except:
+            LOG.error(sys.exc_info())
             msg = 'HttpConnectionPoll time out...'
-        LOG.info(msg)
-        time.sleep(1)
+            LOG.info(msg)
 
 if __name__ == '__main__':
     main()
-

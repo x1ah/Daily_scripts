@@ -110,3 +110,25 @@ class Login:
                                      "key": ''})}
         poll_res = self.http_requests("POST", poll_url, form_data=form_data)
         return 'poll error' if 'errmsg' in poll_res else poll_res
+
+    def send_msg(self, msg, to_id, msg_type):
+        if msg_type == 'message':
+            post_url = 'http://d1.web2.qq.com/channel/send_buddy_msg2'
+            form_data = {'r': json.dumps({'to': to_id,
+                                          "content": json.dumps(
+                                              [msg,
+                                               ["font",
+                                                {"name": "宋体",
+                                                 "size": 10,
+                                                 "style": [0, 0, 0],
+                                                 "color": "000000"}]]),
+                                          "face": 729,
+                                          "clientid": 53999199,
+                                          "msg_id": 34220099,
+                                          "psessionid": self.psessionid,
+                                          })}
+            send_res = self.http_requests("POST", post_url, form_data=form_data)
+            return send_res
+        else:
+            return 'No Action.'
+
