@@ -1,11 +1,13 @@
 #!/usr/bin/env python
 # coding:utf-8
 
+from pprint import pprint
 import json
 import random
 import cookielib
 import requests
 from ShowQRcode import ShowQRcode
+
 
 class Login:
     """
@@ -13,26 +15,25 @@ class Login:
     """
     def __init__(self):
         self.headers = {
-            "Accept-Encoding": "gzip, deflate, sdch, br",
-            "Accept-Language": "zh-CN,zh;q=0.8",
-            "Cache-Control": "max-age=0",
-            "Connection": "keep-alive",
-            "Host": "ui.ptlogin2.qq.com",
+#            "Accept-Encoding": "gzip, deflate, sdch, br",
+#            "Accept-Language": "zh-CN,zh;q=0.8",
+#            "Cache-Control": "max-age=0",
+#            "Connection": "keep-alive",
             "Referer": "http://w.qq.com/",
-            "Upgrade-Insecure-Requests": "1",
+#            "Upgrade-Insecure-Requests": "1",
             "User-Agent": (
                 "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
                 "(KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36"
             )
         }
         self.session = requests.Session()
+        self.session.headers = self.headers
         # TODO: 暂不打算保存 Cookies,达到免扫码登录效果，之后再添加.
 
     def http_requests(self, method, url, headers, form_data=None, cookies=None, timeout=60):
         if method == "GET":
             response = self.session.get(url,
-                                        headers=headers,
-                                        cookies=cookies,
+#                                        headers=headers,
                                         timeout=timeout)
         elif method == "POST":
             response = self.session.post(url,
@@ -44,6 +45,16 @@ class Login:
             print("NOT FOUND METHOD!")
 
         return [response.content, response.text]
+
+    def init_request(self):
+        init_url = ("https://ui.ptlogin2.qq.com/cgi-bin/login?daid=164&"
+                    "target=self&style=16&mibao_css=m_webqq&appid=501004106&"
+                    "enable_qlogin=0&no_verifyimg=1&s_url=http%3A%2F%2Fw.qq."
+                    "com%2Fproxy.html&f_url=loginerroralert&strong_login=1&"
+                    "login_state=10&t=20131024001")
+        self.http_requests("GET", init_url, headers=self.headers)
+        self.appid = 501004106
+
 
     def get_QRcode(self):
         QRcode_url = ("https://ssl.ptlogin2.qq.com/ptqrshow?"
@@ -78,7 +89,7 @@ class Login:
         )
         response = self.http_requests("GET", url, headers)[0]
 #        self.save_cookies()
-        return response.split(',')[4]
+        return response
 #        return True if '登录成功' in response else False
 
     def get_ptwebqq(self):
@@ -87,27 +98,41 @@ class Login:
         return self.ptwebqq
 
     def get_vfwebqq_and_psessionid(self):
-        headers = self.headers
-        get_url = 'http://d1.web2.qq.com/channel/login2'
-        headers.update({
-            'Accept-Encoding': 'gzip, deflate',
-            'Origin': 'http://d1.web2.qq.com',
-            'Referer': 'http://d1.web2.qq.com/proxy.html?v=20151105001&callback=1&id=2',
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Host': 'd1.web2.qq.com'
-        })
-        form_data = {
-            'r': json.dumps({
-                "ptwebqq": self.ptwebqq,
-                "clientid": 53999199,
-                "psessionid": "",
-                "status": "online"
-            })
-        }
-        print headers, form_data
-        res = self.http_requests('POST', get_url, headers, cookies=self.session.cookies, form_data=form_data)
-#        res_dict = json.loads(str(res))
-#        self.psessionid = res_dict['result']['psessionid']
-#        self.vfwebqq = res_dict['result']['vfwebqq']
-        return res
+#        headers = self.headers
+        vfwebqq_url = ("http://s.web2.qq.com/api/getvfwebqq?"
+                       "ptwebqq={0}&clientid=53999199&psessionid=&"
+                       "t=0.1")#.format(self.ptwebqq, random.random()))
+        self.session.headers['Referer'] = 'http://s.web2.qq.com/proxy.html?v=20130916001&callback=1&id=1'
+        self.session.headers['Origin'] = 'http://s.web2.qq.com' #'http://d1.web2.qq.com/proxy.html?v=20151105001&callback=1&id=2'
+#            'Host': 's.web2.qq.com',
+#        vfw_res = self.http_requests('GET', vfwebqq_url, self.session.headers)
+        vfw_res = self.session.get(vfwebqq_url)
+        print vfwebqq_url
+        pprint(self.session.headers)
+        print vfw_res.content
+
+        #self.vfwebqq = json.loads(vfw_res)['result']['vfwebqq']
+
+#        psessionid_url = 'http://d1.web2.qq.com/channel/login2'
+#        headers.update({
+#            'Accept-Encoding': 'gzip, deflate',
+#            'Origin': 'http://d1.web2.qq.com',
+#            'Referer': 'http://d1.web2.qq.com/proxy.html?v=20151105001&callback=1&id=2',
+#            'Content-Type': 'application/x-www-form-urlencoded',
+#            'Host': 'd1.web2.qq.com'
+#        })
+#        form_data = {
+#            'r': json.dumps({
+#                "ptwebqq": self.ptwebqq,
+#                "clientid": 53999199,
+#                "psessionid": "",
+#                "status": "online"
+#            })
+#        }
+##        print headers, form_data
+#        res = self.http_requests('POST', psessionid_url, headers, cookies=self.session.cookies, form_data=form_data)
+##        res_dict = json.loads(str(res))
+##        self.psessionid = res_dict['result']['psessionid']
+##        self.vfwebqq = res_dict['result']['vfwebqq']
+#        return res
 
