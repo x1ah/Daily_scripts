@@ -90,7 +90,9 @@ class Login:
         api_url = 'http://d1.web2.qq.com/channel/login2'
         self.session.headers.update({'Host': 'd1.web2.qq.com',
                                      "Origin": "http://d1.web2.qq.com",
-                                     "Referer": "http://d1.web2.qq.com/proxy.html?v=20151105001&callback=1&id=2"})
+                                     "Referer": (
+                                         "http://d1.web2.qq.com/proxy.html?"
+                                         "v=20151105001&callback=1&id=2")})
         form_data = {'r': json.dumps({"ptwebqq": self.ptwebqq,
                                       "clientid": 53999199,
                                       "psessionid": '',
@@ -99,3 +101,12 @@ class Login:
         result = json.loads(pse_res[0])['result']
         self.psessionid, self.uin = result['psessionid'], result['uin']
         return self.psessionid
+
+    def poll(self):
+        poll_url = 'http://d1.web2.qq.com/channel/poll2'
+        form_data ={'r': json.dumps({"ptwebqq": self.ptwebqq,
+                                     "clientid": 53999199,
+                                     "psessionid": self.psessionid,
+                                     "key": ''})}
+        poll_res = self.http_requests("POST", poll_url, form_data=form_data)
+        return 'poll error' if 'errmsg' in poll_res else poll_res
