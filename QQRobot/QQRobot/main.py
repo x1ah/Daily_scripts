@@ -57,7 +57,7 @@ def main():
         try:
             msg = bot.poll()
             msg_content, from_uin, msg_type = hand_msg(msg[0])
-            LOG.info('{0} 发来一条消息: {1}'.format(from_uin, msg_content))
+            LOG.info('{0} 发来一条消息: {1}'.format(from_uin, msg_content.encode('utf-8')))
             send_status = bot.send_msg(send_msg, from_uin, msg_type)
             LOG.info('回复 {0}: {1}'.format(from_uin, send_status))
         except KeyboardInterrupt:
