@@ -65,8 +65,6 @@ def main():
             STOP = True
         except:
             LOG.error(sys.exc_info())
-            msg = 'HttpConnectionPoll time out...'
-            LOG.info(msg)
 
 if __name__ == '__main__':
     main()
