@@ -23,7 +23,7 @@ class Login:
         self.session.headers = self.headers
         # TODO: 暂不打算保存 Cookies,达到免扫码登录效果，之后再添加.
 
-    def http_requests(self, method, url, form_data=None, timeout=60):
+    def http_requests(self, method, url, form_data=None, timeout=30):
         if method == "GET":
             response = self.session.get(url,
                                         timeout=timeout)
@@ -38,7 +38,7 @@ class Login:
 
     def get_QRcode(self):
         QRcode_url = ("https://ssl.ptlogin2.qq.com/ptqrshow?"
-                      "appid=501004106&e=0&l=M&s=5&d=72&v=4&t=0.1")#{0}".format(random.random()))
+                      "appid=501004106&e=0&l=M&s=5&d=72&v=4&t=0.1")
         response = self.http_requests("GET", QRcode_url)[0]
         with open('./QRcode.png', 'w') as PNG:
             PNG.write(response)
