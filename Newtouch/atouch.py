@@ -7,7 +7,7 @@ import argparse
 
 header_msg = {
     'py': '#!/usr/bin/env python\n# coding:utf-8\n',
-    'c': '#include <stdio.h>\n',
+    'c': '#include <stdio.h>\n\nint main (void)\n{\n    return 0;\n}\n',
     'scm': ';;;\n',
     'm': ''
 }
