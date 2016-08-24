@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 # coding:utf-8
 
+import random
 import logging
+import os
 import sys
 import time
 import json
@@ -34,10 +36,12 @@ def hand_msg(msg):
 
 
 def main():
-    send_msg = '您好,这里是机器人,稍后回复您的消息,抱歉.(望勿频繁调戏机器人...)'
+    SEND_MSG = ("[自动回复]这里是机器人,稍后回复您的消息,"
+                "抱歉.(望勿频繁调戏机器人...)")
     bot = Login()
     LOG.info('请扫描二维码.')
     print(bot.get_QRcode())
+    os.remove('QRcode.png')
     Is_login = False
     while not Is_login:
         time.sleep(2)
@@ -52,14 +56,26 @@ def main():
     bot.get_psessionid()
     LOG.info('等待消息...')
     STOP = False
+    is_open = True
     while not STOP:
         time.sleep(1)
         try:
             msg = bot.poll()
             msg_content, from_uin, msg_type = hand_msg(msg[0])
             LOG.info('{0} 发来一条消息: {1}'.format(from_uin, msg_content.encode('utf-8')))
-            send_status = bot.send_msg(send_msg, from_uin, msg_type)
-            LOG.info('回复 {0}: {1}'.format(from_uin, send_status))
+            if (is_open is True) and ('STOP' not in msg_content):
+                msg = "{0}[{1}]".format(SEND_MSG, random.randint(0, 10))
+                send_status = bot.send_msg(msg, from_uin, msg_type)
+                LOG.info('回复 {0}: {1}'.format(from_uin, send_status))
+            elif 'STOP' in msg_content:
+                LOG.info('CLOSE...')
+                bot.send_msg('CLOSED', from_uin, msg_type)
+                is_open = False
+            elif 'START' in msg_content:
+                LOG.info('STARTED')
+                bot.send_msg('OPENED', from_uin, msg_type)
+                is_open = True
+
         except KeyboardInterrupt:
             LOG.info('See You...')
             STOP = True

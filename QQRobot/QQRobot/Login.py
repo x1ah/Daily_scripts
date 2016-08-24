@@ -72,7 +72,7 @@ class Login:
 #        return True if '登录成功' in response else False
 
     def get_ptwebqq(self):
-        self.http_requests("GET", self.Ptwebqq_url)
+        self.http_requests("GET", self.Ptwebqq_url, timeout=60)
         self.ptwebqq = self.session.cookies['ptwebqq']
         return self.ptwebqq
 
@@ -82,7 +82,7 @@ class Login:
                        "t=0.1".format(self.ptwebqq))
         self.session.headers['Referer'] = 'http://s.web2.qq.com/proxy.html?v=20130916001&callback=1&id=1'
         self.session.headers['Origin'] = 'http://s.web2.qq.com'
-        vfw_res = self.http_requests('GET', vfwebqq_url)
+        vfw_res = self.http_requests('GET', vfwebqq_url, timeout=60)
         self.vfwebqq = json.loads(vfw_res[0])['result']['vfwebqq']
         return self.vfwebqq
 
@@ -131,4 +131,3 @@ class Login:
             return send_res
         else:
             return 'No Action.'
-
