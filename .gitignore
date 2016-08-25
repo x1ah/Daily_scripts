@@ -4,5 +4,6 @@
 /Baidu/tiebaGUI/cookies.txt
 *.png
 *.jpg
-.python-version
+*.python-version
+*.log
 
