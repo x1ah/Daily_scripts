@@ -4,7 +4,7 @@
 懒人欢乐多
 
 - QQRobot
-    - QQ 机器人，正在路上
+    - QQ 机器人
 - Dailyv2ex
     - [v2ex 自动签到领金币](http://xiahei.github.io/2016/05/15/sign-V2EX/)
 - Baidu
