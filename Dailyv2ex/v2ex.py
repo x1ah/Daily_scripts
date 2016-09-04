@@ -26,8 +26,8 @@ class V2EX(object):
             "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
             "(KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36"
         ),
-        'Origin': 'http://www.v2ex.com',
-        'Referer': 'http://www.v2ex.com/signin',
+        'Origin': 'https://www.v2ex.com',
+        'Referer': 'https://www.v2ex.com/signin',
         'Host': 'www.v2ex.com'
     }
 
@@ -38,8 +38,8 @@ class V2EX(object):
 
     def login(self):
         sess = requests.Session()
-        html_login = sess.get('http://www.v2ex.com/signin', headers=self.headers)
-        soup_login = BeautifulSoup(html_login.text, 'lxml')
+        html_login = sess.get('https://www.v2ex.com/signin', headers=self.headers)
+        soup_login = BeautifulSoup(html_login.text, 'html.parser')
         usrname_code = soup_login.find('input', {'class': 'sl'})['name']
         usrpswdcode = soup_login.find('input', {'type': 'password'})['name']
         once = soup_login.find('input', {'name': 'once'})['value']
@@ -49,9 +49,9 @@ class V2EX(object):
             'once': once,
             'next': '/'
         }
-        sess.post('http://www.v2ex.com/signin', form_data, headers=self.headers)
-        sethtml = sess.get('http://www.v2ex.com/settings', headers=self.headers)
-        soup = BeautifulSoup(sethtml.text, 'lxml')
+        sess.post('https://www.v2ex.com/signin', form_data, headers=self.headers)
+        sethtml = sess.get('https://www.v2ex.com/settings', headers=self.headers)
+        soup = BeautifulSoup(sethtml.text, 'html.parser')
         email = soup.find('input', {'type': 'email'})['value']
         status = True if email else False
         message = '登录成功！' if status else '登录失败！'
@@ -63,17 +63,17 @@ class V2EX(object):
         :param sess: 登录状态
         :return: 获取签到奖励和余额
         """
-        html_balance = sess.get('http://www.v2ex.com/balance', headers={'Referer': 'http://www.v2ex.com/balance'}).text
+        html_balance = sess.get('https://www.v2ex.com/balance', headers={'Referer': 'https://www.v2ex.com/balance'}).text
         today_gold = re.findall(u'>(\d+.+的每日.+)</span', html_balance)[0]
         return today_gold
 
     def daily(self, sess):
-        url_sing = 'http://www.v2ex.com/mission/daily'
+        url_sing = 'https://www.v2ex.com/mission/daily'
         html_daily = sess.get(url_sing, headers=self.headers)
-        soup_m = BeautifulSoup(html_daily.text, 'lxml')
+        soup_m = BeautifulSoup(html_daily.text, 'html.parser')
         u = soup_m.find('input', {"type": 'button'})['onclick'].split('\'')[1]
-        sign_url = 'http://www.v2ex.com' + u    # 签到 url
-        res = sess.get(sign_url, headers={'Referer': 'http://www.v2ex.com/mission/daily'})
+        sign_url = 'https://www.v2ex.com' + u    # 签到 url
+        res = sess.get(sign_url, headers={'Referer': 'https://www.v2ex.com/mission/daily'})
         des = self.balance(sess)
         self.log.info(des)
         if res.text.find(u'已成功领取每日登录奖励') > 0:
