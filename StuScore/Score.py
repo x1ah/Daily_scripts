@@ -2,10 +2,9 @@
 # coding:utf-8
 from bs4 import BeautifulSoup
 from prettytable import PrettyTable
-import requests, os
+import requests
+import os
 import sys
-reload(sys)
-sys.setdefaultencoding('utf-8')
 
 
 class score(object):
@@ -46,10 +45,10 @@ class score(object):
         s = requests.session()
         response = s.post(url=login_url, data=form_data, headers=header)
         response_text = response.text
-        if response_text.find(u'个人资料') > 0:
+        if u'个人资料' in response_text:
             ifo = '登录成功！'
             status = s
-        elif response_text.find('密码不正确') > 0:
+        elif u'密码不正确' in response_text:
             ifo = '密码错误...请重试...'
             status = False
         else:
