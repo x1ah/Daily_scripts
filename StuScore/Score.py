@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 # coding:utf-8
+
+import os
+
+import requests
 from bs4 import BeautifulSoup
 from prettytable import PrettyTable
-import requests
-import os
-import sys
 
 
 class score(object):
