@@ -25,7 +25,7 @@ int main (int argc, char * argv[])
     char calg[] = "12345678";
     if (argc != 2)
     {
-        printf ("Usage: %s [count]\n", argv[0]);
+        printf ("Usage: %s [origin password]\n", argv[0]);
         exit (1);
     }
     count_cat (pid, calg, argv[1]);
