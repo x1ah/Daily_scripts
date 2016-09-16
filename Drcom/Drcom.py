@@ -7,9 +7,6 @@ import re
 
 import requests
 
-from hashlib import md5
-
-
 def log():
     logging.basicConfig(filename='drcom.log',
                         level=logging.DEBUG,
@@ -26,20 +23,35 @@ def read_config(config_path):
     configs = ConfigParser.ConfigParser()
     configs.read(config_path)
     count = configs.get('userinfo', 'count')
-    password = configs.get('userinfo', 'password')
-    host = configs.get('userinfo', 'host')
-    config_dict = {'count': count,
-                   'password': password,
-                   'host': host}
+#    password = configs.get('userinfo', 'password')
+#    host = configs.get('userinfo', 'host')
+    config_dict = {'count': count}
     return config_dict
 
+def conf(config_path):
+    configs = ConfigParser.ConfigParser()
+    configs.read(config_path)
+    return configs
 
 class Drcom:
 
     LOG = log()
+    en_pswd = conf('ENPSWD.ini')
     configs = read_config('config.ini')
     count = configs.get('count')
-    password = configs.get('password')
-    host = configs.get('host')
+    password = en_pswd.get('enpswd', 'enpswd')
+#    host = configs.get('host')
 
-    def __init__(self):
+    def login(self):
+        url = 'http://202.112.208.3/'
+        data_form = {
+            "DDDDD": self.count,
+            "upass": self.password,
+            "R1": '0',
+            "R2": '1',
+            "para": "00",
+            "0MKKey": "123456"
+        }
+        res = requests.post(url, data=data_form)
+        print res.content
+        return res
