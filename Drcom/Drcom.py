@@ -7,8 +7,6 @@ import re
 
 import requests
 
-from hashlib import md5
-
 
 def log():
     logging.basicConfig(filename='drcom.log',
@@ -26,11 +24,9 @@ def read_config(config_path):
     configs = ConfigParser.ConfigParser()
     configs.read(config_path)
     count = configs.get('userinfo', 'count')
-    password = configs.get('userinfo', 'password')
-    host = configs.get('userinfo', 'host')
+    password = configs.get('userinfo', 'enpassword')
     config_dict = {'count': count,
-                   'password': password,
-                   'host': host}
+                   'password': password}
     return config_dict
 
 
@@ -40,6 +36,4 @@ class Drcom:
     configs = read_config('config.ini')
     count = configs.get('count')
     password = configs.get('password')
-    host = configs.get('host')
-
-    def __init__(self):
+    host = "http://202.112.208.3/"
