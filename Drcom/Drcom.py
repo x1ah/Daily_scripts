@@ -33,7 +33,25 @@ def read_config(config_path):
 class Drcom:
 
     LOG = log()
-    configs = read_config('config.ini')
-    count = configs.get('count')
-    password = configs.get('password')
     host = "http://202.112.208.3/"
+    headers = {
+        "User-Agent": ("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36"
+                       "(KHTML, like Gecko) Chrome/53.0.2785.116 Safari/537.36")
+    }
+
+    def __init__(self):
+        self.configs = read_config('config.ini')
+        self.count = self.configs.get('count')
+        self.password = self.configs.get('password')
+        self.session = requests.Session()
+        self.session.headers = self.headers
+
+    def http_requests(self, method, action, headers=None, form_data=None,
+                      timeout=60):
+        if method == "GET":
+            res = self.sess.get(action, headers, timeout=timeout)
+        elif method == "POST":
+            res = self.sess.post(action, data=form_data, timeout=timeout)
+        else:
+            self.LOG.error("NOT FOUND METHOD {0}".format(method))
+        return res
