@@ -16,33 +16,35 @@ ele * str2binl (char * str);
 char * binl2hex (ele * binarray);
 char * calcMD5 (char * seq);
 int count_cat (char * pid, char * calg, char * count);
-int write_en_pswd (char * pswd);
+int write_en_pswd (char *count, char *pswd, char * enpswd);
 
 int main (int argc, char * argv[])
 {
-    /* argv[1]: your origin password, and after pswd_cat, password change to pid */
+    /* argv[1]: origin password, and after pswd_cat, password change to pid */
     char pid[] = "1";
     char calg[] = "12345678";
-    if (argc != 2)
+    if (argc != 3)
     {
-        printf ("Usage: %s [origin password]\n", argv[0]);
+        printf ("Usage: %s [student num] [origin password]\n", argv[0]);
         exit (1);
     }
-    count_cat (pid, calg, argv[1]);
-    write_en_pswd (strcat(calcMD5(pid), "123456781"));
+    count_cat (pid, calg, argv[2]);
+    write_en_pswd (argv[1], argv[2], strcat(calcMD5(pid), "123456781"));
 
     return 0;
 }
 
-int write_en_pswd (char * pswd)
+int write_en_pswd (char *count, char *pswd, char * enpswd)
 {
     FILE * pswd_file_pointer;
-    if ((pswd_file_pointer = fopen("ENPSWD.ini", "w")) == NULL)
+    if ((pswd_file_pointer = fopen("config.ini", "w")) == NULL)
     {
-        fprintf (stdout, "Can't open \"ENPSWD.ini\" file.\n");
+        fprintf (stdout, "Can't open \"config.ini\" file.\n");
         exit(1);
     }
-    fprintf (pswd_file_pointer, "[enpswd]\nenpswd = %s\n", pswd);
+    fprintf (pswd_file_pointer,
+            "[userinfo]\ncount=%s\npassword=%s\nenpassword=%s\n",
+            count, pswd, enpswd);
     if (fclose (pswd_file_pointer) != 0)
         fprintf (stderr, "Error closeing file\n");
     return 0;
@@ -62,7 +64,6 @@ ele safe_add (ele x, ele y)
     msw = (x >> 16) + (y >> 16) + (lsw >> 16);
 
     res = (msw << 16) | (lsw & 0xffff);
-    //    printf ("safe_add: %u\n", res);
     return res;
 }
 
@@ -70,7 +71,6 @@ ele rol (ele num, ele cnt)
 {
     ele res;
     res = (num << cnt) | (num >> (32-cnt));
-    //    printf ("rol: %u\n", res);
     return res;
 }
 
@@ -79,7 +79,6 @@ ele cmn (ele q, ele a, ele b, ele x, ele s, ele t)
     ele res;
 
     res = safe_add (rol (safe_add (safe_add (a, q), safe_add (x, t)), s), b);
-    //    printf ("cmn: %u\n", res);
     return res;
 }
 
@@ -109,9 +108,6 @@ ele gg (ele a, ele b, ele c, ele d, ele x, ele s, ele t)
 
 ele * coreMD5 (ele * x, int len)
 {
-    /*
-     * get array, return a list(array)
-     */
     int i;
     static ele res_core[4];
     ele a = 1732584193;
@@ -206,9 +202,6 @@ ele * coreMD5 (ele * x, int len)
 
 char * binl2hex (ele * binarray)
 {
-    /*
-     * get array, return string
-     */
     int i;
     char hex_tab[] = "0123456789abcdef";
     static char seq_hex[] = "01010000111001011000110100010011";
@@ -223,9 +216,6 @@ char * binl2hex (ele * binarray)
 
 ele * str2binl (char * str)
 {
-    /*
-     * get string, return array
-     */
     int LEN, i;
     LEN = (int) strlen (str);
     ele nblk = ((LEN + 8) >> 6) + 1;
@@ -244,9 +234,6 @@ ele * str2binl (char * str)
 
 char * calcMD5 (char * seq)
 {
-    /*
-     * get string, return string
-     */
     return binl2hex (coreMD5 (str2binl (seq), 16));
 }
 
