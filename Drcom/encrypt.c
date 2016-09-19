@@ -20,7 +20,7 @@ int write_en_pswd (char *count, char *pswd, char * enpswd);
 
 int main (int argc, char * argv[])
 {
-    /* argv[1]: your origin password, and after pswd_cat, password change to pid */
+    /* argv[1]: origin password, and after pswd_cat, password change to pid */
     char pid[] = "1";
     char calg[] = "12345678";
     if (argc != 3)
@@ -72,7 +72,6 @@ ele rol (ele num, ele cnt)
 {
     ele res;
     res = (num << cnt) | (num >> (32-cnt));
-    //    printf ("rol: %u\n", res);
     return res;
 }
 
@@ -81,7 +80,6 @@ ele cmn (ele q, ele a, ele b, ele x, ele s, ele t)
     ele res;
 
     res = safe_add (rol (safe_add (safe_add (a, q), safe_add (x, t)), s), b);
-    //    printf ("cmn: %u\n", res);
     return res;
 }
 
@@ -111,9 +109,6 @@ ele gg (ele a, ele b, ele c, ele d, ele x, ele s, ele t)
 
 ele * coreMD5 (ele * x, int len)
 {
-    /*
-     * get array, return a list(array)
-     */
     int i;
     static ele res_core[4];
     ele a = 1732584193;
@@ -208,9 +203,6 @@ ele * coreMD5 (ele * x, int len)
 
 char * binl2hex (ele * binarray)
 {
-    /*
-     * get array, return string
-     */
     int i;
     char hex_tab[] = "0123456789abcdef";
     static char seq_hex[] = "01010000111001011000110100010011";
@@ -225,9 +217,6 @@ char * binl2hex (ele * binarray)
 
 ele * str2binl (char * str)
 {
-    /*
-     * get string, return array
-     */
     int LEN, i;
     LEN = (int) strlen (str);
     ele nblk = ((LEN + 8) >> 6) + 1;
@@ -246,10 +235,5 @@ ele * str2binl (char * str)
 
 char * calcMD5 (char * seq)
 {
-    /*
-     * get string, return string
-     */
     return binl2hex (coreMD5 (str2binl (seq), 16));
 }
-
-
