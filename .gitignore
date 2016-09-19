@@ -6,4 +6,4 @@
 *.jpg
 *.python-version
 *.log
-Drcom/config.ini
+*.ini
