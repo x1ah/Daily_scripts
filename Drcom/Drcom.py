@@ -1,9 +1,12 @@
 #!/usr/bin/env python
 # encoding: utf-8
 
+import argparse
 import ConfigParser
 import logging
 import re
+import os
+import sys
 
 import requests
 
@@ -29,6 +32,24 @@ def read_config(config_path):
                    'enpassword': enpassword}
     return config_dict
 
+def get_sys_version():
+    return sys.platform
+
+class ParseArgs:
+    def pargs(self):
+        parser = argparse.ArgumentParser(
+            description="student's count and password.")
+        parser.add_argument('count')
+        parser.add_argument('password')
+        self.args = parser.parse_args()
+        print self.args.count
+        return {'count': self.args.count,
+                'password': self.args.password}
+
+    def __str__(self):
+        return self.args
+
+    __repr__ = __str__
 
 class Drcom:
 
@@ -80,8 +101,7 @@ class Drcom:
             flow = int(re.findall("flow=\'(\d+)", message_html)[0])
             used = self.calc_flow(flow)
             balance = 25000 - used
-            self.used = used
-            self.balance = balance
+            self.used , self.balance = used, balance
 
     def login(self):
         if not self.is_login:
@@ -93,15 +113,32 @@ class Drcom:
             self.LOG.error("YOU ARE ALDEARY LOGIN.")
 
     def logout(self):
-        if self.login():
+        if self.is_login():
             res = self.http_requests("GET", self.host+"F.htm").content
             self.is_login = "can not modify" in res
             return self.is_login
         else:
             self.LOG.error("YOU ARE NOT LOGIN.")
 
+
+def start():
+    try:
+        print 'try.....'
+        main = Drcom()
+        main.login()
+        main.LOG.info('Used {0} MBytes, {1} MBytes balanced'.format(main.used, main.balance))
+    except ConfigParser.NoSectionError:
+        print 'except.....'
+        config_parser = ParseArgs().pargs()
+        count, password = config_parser.get('count'), config_parser.get('password')
+        os.system("./encrypt {0} {1}".format(count, password))
+        main = Drcom()
+        main.login()
+        main.LOG.info('Used {0} MBytes, {1} MBytes balanced'.format(main.used, main.balance))
+
 if __name__ == "__main__":
-    foo = Drcom()
-    foo.login()
-    foo.LOG.info('Used {0} MBytes, {1} MBytes balanced'.format(foo.used, foo.balance))
-#    foo.logout()
+    start()
+#    main = Drcom()
+#    main.login()
+#    main.LOG.info('Used {0} MBytes, {1} MBytes balanced'.format(main.used, main.balance))
+#    main.logout()
