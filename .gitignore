@@ -7,3 +7,5 @@
 *.python-version
 *.log
 *.ini
+/Drcom/CUMTB-16
+/Drcom/nohup.out
