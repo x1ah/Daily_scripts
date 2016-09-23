@@ -1,9 +1,15 @@
 #!/usr/bin/env python
 # encoding: utf-8
 
+import argparse
+import csv
 import ConfigParser
 import logging
 import re
+import os
+import random
+import sys
+import time
 
 import requests
 
@@ -24,15 +30,31 @@ def read_config(config_path):
     configs = ConfigParser.ConfigParser()
     configs.read(config_path)
     count = configs.get('userinfo', 'count')
+    password = configs.get('userinfo', 'password')
     enpassword = configs.get('userinfo', 'enpassword')
     config_dict = {'count': count,
+                   'password': password,
                    'enpassword': enpassword}
     return config_dict
 
-def conf(config_path):
-    configs = ConfigParser.ConfigParser()
-    configs.read(config_path)
-    return configs
+def get_sys_version():
+    return sys.platform
+
+class ParseArgs:
+    def pargs(self):
+        parser = argparse.ArgumentParser(
+            description="student's count and password.")
+        parser.add_argument('count')
+        parser.add_argument('password')
+        self.args = parser.parse_args()
+        print self.args.count
+        return {'count': self.args.count,
+                'password': self.args.password}
+
+    def __str__(self):
+        return self.args
+
+    __repr__ = __str__
 
 class Drcom:
 
@@ -47,6 +69,7 @@ class Drcom:
     def __init__(self):
         self.configs = read_config('config.ini')
         self.count = self.configs.get('count')
+        self.password = self.configs.get('password')
         self.enpassword = self.configs.get('enpassword')
         self.sess = requests.Session()
         self.sess.headers = self.headers
@@ -84,27 +107,76 @@ class Drcom:
             flow = int(re.findall("flow=\'(\d+)", message_html)[0])
             used = self.calc_flow(flow)
             balance = 25000 - used
-            self.used = used
-            self.balance = balance
+            self.used , self.balance = used, balance
+            return True
 
     def login(self):
         if not self.is_login:
-            res = self.http_requests("POST", self.host, form_data=self.post_data).content
-            self.is_login = 'successfully' in res
+            res = self.http_requests("POST",
+                                     self.host,
+                                     form_data=self.post_data).content
+            self.is_login = 'You have successfully logged into our system' in res
             self.get_user_message() if self.is_login else None
             return self.is_login
         else:
             self.LOG.error("YOU ARE ALDEARY LOGIN.")
 
     def logout(self):
-        if self.login():
+        if self.is_login():
             res = self.http_requests("GET", self.host+"F.htm").content
             self.is_login = "can not modify" in res
             return self.is_login
         else:
             self.LOG.error("YOU ARE NOT LOGIN.")
 
+def get_count_pswd(path):
+    symbol = '\\' if 'win' in get_sys_version() else '/'
+    college = random.choice(os.listdir(path))
+    _class = path + symbol + college + symbol + random.choice(
+        os.listdir(path+symbol+college))
+    with open(_class, 'rb') as csvfile:
+        reader = csv.reader(csvfile)
+        random_list = random.choice(list(reader)[1:])
+        return [random_list[1], random_list[2][-6:]]
+
+
+
+def write_conf(count, password):
+    if 'linux' in get_sys_version():
+        os.system("./encrypt {0} {1}".format(count, password))
+    elif 'windows' in sys.platform:
+        os.system("./encrypt.exe {0} {1}".format(count, password))
+
+def abu_login():
+    main = Drcom()
+    main.login()
+    if main.is_login:
+        main.LOG.info("Loged in as count: {0}, password: {1}".format(
+            main.count, main.password))
+        main.LOG.info('Used {0} MBytes, {1} MBytes balanced'.format(
+            main.used, main.balance))
+    else:
+        main.is_login = False
+        main.LOG.warn('Login failed...')
+
+    return main.is_login, main
+
+def start():
+    LOGED_IN = False
+    while not LOGED_IN:
+        count, password = get_count_pswd("CUMTB-16")
+        write_conf(count, password)
+        LOGED_IN, sess = abu_login()
+    return LOGED_IN, sess
+
+
 if __name__ == "__main__":
-    foo = Drcom()
-    foo.login()
-    foo.LOG.info('Used {0} MBytes, {1} MBytes balanced'.format(foo.used, foo.balance))
+    while True:
+        status, sess = start()
+        start_time = time.time()
+        while (time.time() - start_time) < 2700:
+            time.sleep(10)
+            try:
+                sess.get_user_message()
+            except IndexError:
+                break

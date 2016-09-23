@@ -236,5 +236,3 @@ char * calcMD5 (char * seq)
 {
     return binl2hex (coreMD5 (str2binl (seq), 16));
 }
-
-
