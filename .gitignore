@@ -8,4 +8,4 @@
 *.log
 *.ini
 /Drcom/CUMTB-16/*
-
+*.out
