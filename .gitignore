@@ -7,4 +7,5 @@
 *.python-version
 *.log
 *.ini
+/Drcom/CUMTB-16/*
 
