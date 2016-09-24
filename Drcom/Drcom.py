@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # encoding: utf-8
 
-import argparse
 import csv
 import ConfigParser
 import logging
@@ -40,21 +39,20 @@ def read_config(config_path):
 def get_sys_version():
     return sys.platform
 
-class ParseArgs:
-    def pargs(self):
-        parser = argparse.ArgumentParser(
-            description="student's count and password.")
-        parser.add_argument('count')
-        parser.add_argument('password')
-        self.args = parser.parse_args()
-        print self.args.count
-        return {'count': self.args.count,
-                'password': self.args.password}
-
-    def __str__(self):
-        return self.args
-
-    __repr__ = __str__
+#class ParseArgs:
+#    def pargs(self):
+#        parser = argparse.ArgumentParser(
+#            description="student's count and password.")
+#        parser.add_argument('count')
+#        parser.add_argument('password')
+#        self.args = parser.parse_args()
+#        return {'count': self.args.count,
+#                'password': self.args.password}
+#
+#    def __str__(self):
+#        return self.args
+#
+#    __repr__ = __str__
 
 class Drcom:
 
@@ -172,11 +170,14 @@ def start():
 
 if __name__ == "__main__":
     while True:
-        status, sess = start()
-        start_time = time.time()
-        while (time.time() - start_time) < 2700:
-            time.sleep(10)
-            try:
-                sess.get_user_message()
-            except IndexError:
-                break
+        try:
+            status, sess = start()
+            start_time = time.time()
+            while (time.time() - start_time) < 2700:
+                time.sleep(10)
+                try:
+                    sess.get_user_message()
+                except IndexError:
+                    break
+        except:
+            pass
