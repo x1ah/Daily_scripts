@@ -142,8 +142,8 @@ def get_count_pswd(path):
 def write_conf(count, password):
     if 'linux' in get_sys_version():
         os.system("./encrypt {0} {1}".format(count, password))
-    elif 'windows' in sys.platform:
-        os.system("./encrypt.exe {0} {1}".format(count, password))
+    elif 'win' in sys.platform:
+        os.system(".\encrypt.exe {0} {1}".format(count, password))
 
 def abu_login():
     main = Drcom()
