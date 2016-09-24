@@ -15,7 +15,7 @@ import requests
 
 def log():
     logging.basicConfig(filename='drcom.log',
-                        level=logging.DEBUG,
+                        level=logging.INFO,
                         format='[%(levelname)s] [%(asctime)s]: %(message)s',
                         datefmt='%d/%b/%y %H:%M:%S')
     handler = logging.StreamHandler()
@@ -169,6 +169,10 @@ def start():
 
 
 if __name__ == "__main__":
+    try:
+        os.remore('drcom.log')
+    except:
+        pass
     while True:
         try:
             status, sess = start()
