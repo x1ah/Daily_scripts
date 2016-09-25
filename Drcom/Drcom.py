@@ -170,9 +170,10 @@ def start():
 
 if __name__ == "__main__":
     try:
-        os.remore('drcom.log')
+        os.remove('drcom.log')
     except:
         pass
+
     while True:
         try:
             status, sess = start()
