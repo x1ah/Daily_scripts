@@ -15,6 +15,7 @@ import requests
 
 def log():
     logging.basicConfig(filename='drcom.log',
+                        filemode='w',
                         level=logging.INFO,
                         format='[%(levelname)s] [%(asctime)s]: %(message)s',
                         datefmt='%d/%b/%y %H:%M:%S')
@@ -39,20 +40,6 @@ def read_config(config_path):
 def get_sys_version():
     return sys.platform
 
-#class ParseArgs:
-#    def pargs(self):
-#        parser = argparse.ArgumentParser(
-#            description="student's count and password.")
-#        parser.add_argument('count')
-#        parser.add_argument('password')
-#        self.args = parser.parse_args()
-#        return {'count': self.args.count,
-#                'password': self.args.password}
-#
-#    def __str__(self):
-#        return self.args
-#
-#    __repr__ = __str__
 
 class Drcom:
 
@@ -169,11 +156,6 @@ def start():
 
 
 if __name__ == "__main__":
-    try:
-        os.remove('drcom.log')
-    except:
-        pass
-
     while True:
         try:
             status, sess = start()
