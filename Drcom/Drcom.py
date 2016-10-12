@@ -3,6 +3,7 @@
 
 import csv
 import ConfigParser
+import contextlib
 import logging
 import re
 import os
@@ -12,6 +13,12 @@ import time
 
 import requests
 
+@contextlib.contextmanager
+def ignored(*exceptions):
+    try:
+        yield
+    except:
+        pass
 
 def log():
     logging.basicConfig(filename='drcom.log',
@@ -169,20 +176,16 @@ def start():
 
 
 if __name__ == "__main__":
-    try:
+    with ignored():
         os.remove('drcom.log')
-    except:
-        pass
 
     while True:
-        try:
+        with ignored():
             status, sess = start()
             start_time = time.time()
             while (time.time() - start_time) < 2700:
-                time.sleep(10)
+                time.sleep(5)
                 try:
                     sess.get_user_message()
                 except IndexError:
                     break
-        except:
-            pass

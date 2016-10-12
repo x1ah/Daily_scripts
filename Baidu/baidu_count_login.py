@@ -38,12 +38,13 @@ class Baidu(object):
     )       # 签到url
 
     def __init__(self, cookies):
-        self.cookies = cookies
+        self.sess = requests.Session()
+        self.sess.headers = {"Cookie": cookies}
 
     def get_token(self):
         """获取token参数"""
         url_to_token = 'https://passport.baidu.com/v2/api/?getapi&tpl=tb&apiver=v3'
-        response = requests.get(url_to_token, cookies=self.cookies)
+        response = self.sess.get(url_to_token)
         json = response.text
         token = re.findall('token\" : "(\w+)\",', json)[0]
         return token
@@ -68,10 +69,10 @@ class Baidu(object):
             print('登录成功!')
             return sess
 
-    def sign_single_ba(self, sess, kw):
+    def sign_single_ba(self, kw):
         """单个吧签到"""
         url = self.sign_url + kw
-        html = sess.get(url).text
+        html = self.sess.get(url, timeout=30).text
         soup = BeautifulSoup(html, 'html.parser')
         status = soup.select('body > div > span')[0].text
         return status
@@ -79,7 +80,7 @@ class Baidu(object):
     def get_info(self, sess):
         """获取个人关注贴吧，以及各贴吧经验，等级并返回"""
         myFavor = 'http://tieba.baidu.com/mo/m?tn=bdFBW&tab=favorite'
-        html = sess.get(myFavor).text
+        html = self.sess.get(myFavor).text
         soup = BeautifulSoup(html, 'html.parser')
         allLabel = soup.find_all('td')
         kws = [item.text.split('.')[-1] for
@@ -88,20 +89,20 @@ class Baidu(object):
         exercises = [item.text for item in allLabel[2::3]]
         return [kws, levels, exercises]
 
-    def sign_all_ba(self, sess):
+    def sign_all_ba(self):
         """每个页的每个贴吧签到"""
         table = PrettyTable([u'贴吧', u'签到状态'])
         table.padding_width = 2
 
-        kws = self.get_info(sess)[0]
+        kws = self.get_info(self.sess)[0]
         for index, kw in enumerate(kws):
             try:
-                status = self.sign_single_ba(sess, kw)
+                status = self.sign_single_ba(kw)
             except IndexError:
                 status = u'签到异常.'
             print(u'{0} {1}'.format(kw, status))
             table.add_row([kw, status])
-        temp = self.get_info(sess)
+        temp = self.get_info(self.sess)
         levels = temp[1]
         exercises = temp[2]
         table.add_column(u'经验', exercises)
@@ -111,18 +112,19 @@ class Baidu(object):
 
 
 def start(usrname, pswd):
-    cookie = get_cookies()
+#    cookie = get_cookies()
+    cookie = open("cookies", 'r').read()
     tieba = Baidu(cookie)
-    token = tieba.get_token()
-    res = tieba.login(token, usrname, pswd, cookie)
-    tieba.sign_all_ba(res)
+#    token = tieba.get_token()
+#    res = tieba.login(token, usrname, pswd, cookie)
+    tieba.sign_all_ba()
 
 if __name__ == '__main__':
-    try:
-        usrname = raw_input('手机/邮箱/用户名: ')
-        pswd = raw_input('密码: ')
-    except:
-        usrname = input('手机/邮箱/用户名: ')
-        pswd = input('密码: ')
+#    try:
+#        usrname = raw_input('手机/邮箱/用户名: ')
+#        pswd = raw_input('密码: ')
+#    except:
+#        usrname = input('手机/邮箱/用户名: ')
+#        pswd = input('密码: ')
 
-    start(usrname, pswd)
+    start(1, 0)
