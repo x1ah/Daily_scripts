@@ -2,6 +2,8 @@
 *~
 /Baidu/cookies.txt
 /Baidu/tiebaGUI/cookies.txt
+/Baidu/tiebaGUI/cookies
+/Baidu/cookies
 *.png
 *.jpg
 *.python-version
