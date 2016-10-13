@@ -1,15 +1,15 @@
 #!/usr/bin/env python
 # encoding: utf-8
 
-import csv
-import ConfigParser
-import contextlib
-import logging
-import re
 import os
-import random
+import re
+import csv
 import sys
 import time
+import random
+import logging
+import contextlib
+import ConfigParser
 
 import requests
 
@@ -23,6 +23,7 @@ def ignored(*exceptions):
 def log():
     logging.basicConfig(filename='drcom.log',
                         level=logging.INFO,
+                        filemode='w',
                         format='[%(levelname)s] [%(asctime)s]: %(message)s',
                         datefmt='%d/%b/%y %H:%M:%S')
     handler = logging.StreamHandler()
@@ -43,8 +44,8 @@ def read_config(config_path):
                    'enpassword': enpassword}
     return config_dict
 
-def get_sys_version():
-    return sys.platform
+
+sys_version = lambda: sys.platform
 
 #class ParseArgs:
 #    def pargs(self):
@@ -65,7 +66,7 @@ class Drcom:
 
     LOG = log()
     host = "http://202.112.208.3/"
-    is_login = False
+    IS_LOGIN = False
     headers = {
         "User-Agent": ("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36"
                        "(KHTML, like Gecko) Chrome/53.0.2785.116 Safari/537.36")
@@ -107,7 +108,7 @@ class Drcom:
         return float('{0}.{1}'.format(flow1 / 1024, flow0 / 1024))
 
     def get_user_message(self):
-        if self.is_login:
+        if self.IS_LOGIN:
             message_html = self.http_requests("GET", self.host).content
             flow = int(re.findall("flow=\'(\d+)", message_html)[0])
             used = self.calc_flow(flow)
@@ -116,26 +117,26 @@ class Drcom:
             return True
 
     def login(self):
-        if not self.is_login:
+        if not self.IS_LOGIN:
             res = self.http_requests("POST",
                                      self.host,
                                      form_data=self.post_data).content
-            self.is_login = 'You have successfully logged into our system' in res
-            self.get_user_message() if self.is_login else None
-            return self.is_login
+            self.IS_LOGIN = 'You have successfully logged into our system' in res
+            self.get_user_message() if self.IS_LOGIN else None
+            return self.IS_LOGIN
         else:
             self.LOG.error("YOU ARE ALDEARY LOGIN.")
 
     def logout(self):
-        if self.is_login():
+        if self.IS_LOGIN():
             res = self.http_requests("GET", self.host+"F.htm").content
-            self.is_login = "can not modify" in res
-            return self.is_login
+            self.IS_LOGIN = "can not modify" in res
+            return self.IS_LOGIN
         else:
             self.LOG.error("YOU ARE NOT LOGIN.")
 
 def get_count_pswd(path):
-    symbol = '\\' if 'win' in get_sys_version() else '/'
+    symbol = '\\' if 'win' in sys_version() else '/'
     college = random.choice(os.listdir(path))
     _class = path + symbol + college + symbol + random.choice(
         os.listdir(path+symbol+college))
@@ -145,9 +146,8 @@ def get_count_pswd(path):
         return [random_list[1], random_list[2][-6:]]
 
 
-
 def write_conf(count, password):
-    if 'linux' in get_sys_version():
+    if 'linux' in sys_version():
         os.system("./encrypt {0} {1}".format(count, password))
     elif 'win' in sys.platform:
         os.system(".\encrypt.exe {0} {1}".format(count, password))
@@ -155,16 +155,16 @@ def write_conf(count, password):
 def abu_login():
     main = Drcom()
     main.login()
-    if main.is_login:
+    if main.IS_LOGIN:
         main.LOG.info("Loged in as count: {0}, password: {1}".format(
             main.count, main.password))
         main.LOG.info('Used {0} MBytes, {1} MBytes balanced'.format(
             main.used, main.balance))
     else:
-        main.is_login = False
+        main.IS_LOGIN = False
         main.LOG.warn('Login failed...')
 
-    return main.is_login, main
+    return main.IS_LOGIN, main
 
 def start():
     LOGED_IN = False
@@ -176,16 +176,16 @@ def start():
 
 
 if __name__ == "__main__":
-    with ignored():
-        os.remove('drcom.log')
-
-    while True:
-        with ignored():
-            status, sess = start()
-            start_time = time.time()
-            while (time.time() - start_time) < 2700:
-                time.sleep(5)
-                try:
-                    sess.get_user_message()
-                except IndexError:
-                    break
+    CONTINUE = True
+    while CONTINUE:
+        status, sess = start()
+        start_time = time.time()
+        while (time.time() - start_time) < 2700 and CONTINUE:
+            time.sleep(1)
+            try:
+                sess.get_user_message()
+            except IndexError:
+                break
+            except KeyboardInterrupt:
+                CONTINUE = False
+                start()[1].LOG.warn("Bye.")
