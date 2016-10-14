@@ -11,4 +11,5 @@
 *.ini
 /Drcom/CUMTB-16
 /Drcom/nohup.out
+*.db
 *.out
