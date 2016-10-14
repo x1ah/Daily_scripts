@@ -32,10 +32,10 @@ class Baidu(object):
         """单个吧签到"""
         url = self.sign_url + kw
         try:
-            html = self.sess.get(url).text
+            html = self.sess.get(url, timeout=30).text
         except:
             print("timeout, sign again.")
-            html = self.sess.get(url).text
+            html = self.sess.get(url, timeout=30).text
 
         soup = BeautifulSoup(html, 'html.parser')
         status = soup.select('body > div > span')[0].text
@@ -65,7 +65,7 @@ class Baidu(object):
                 status = self.sign_single_ba(kw)
             except IndexError:
                 status = u'签到异常.'
-            print(u'{0} {1}'.format(kw, status))#.decode('utf-8').encode('gb2312')))
+            print(u'{0}\t\t{1}'.format(kw, status))
             table.add_row([kw, status])
         kws, levels, exercises = self.get_info()
         table.add_column(u'经验', exercises)
