@@ -139,7 +139,7 @@ class DB:
     def delete(self, SQL, *args):
         """
         eg:
-        >>> DB.delete('delete * FROM CUMTB WHERE Sno=?;', "12423")
+        >>> DB.delete('delete FROM CUMTB WHERE Sno=?;', "12423")
         """
         self.cursor.execute(SQL, args)
         self.connect.commit()
@@ -192,7 +192,8 @@ def abu_login(db):
     else:
         main.IS_LOGIN = False
         main.LOG.warn('Login failed...')
-        database.delete("delete * from CUMTB where Sno=?", main.count)
+        database.delete("delete from CUMTB where Sno=?", main.count)
+        main.LOG.info("delete {} from database.".format(main.count))
 
     database.close()
     return main.IS_LOGIN, main
