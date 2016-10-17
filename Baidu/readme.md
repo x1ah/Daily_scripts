@@ -1,4 +1,7 @@
 [百度贴吧自动签到小脚本.](https://xiahei.github.io/2016/06/18/sign-Baidu-Tieba/)
+>由于贴吧登陆新增验证码机制，账号密码登陆签到已失效，改为用cookies，浏览器复制自己的cookies保存到此目录下新建的`cookies`文件中运行`python baidu_cookies_login.py`即可.
+
+
 
 ## 命令行版
 - 依赖:
@@ -9,6 +12,7 @@
     - `prettytable`
         - `pip install prettytable`
 
+>以下均失效
 - 使用
     - clone 代码，`python baidu.py`输入用户名，密码即可。
 
