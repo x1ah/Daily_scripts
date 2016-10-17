@@ -21,7 +21,7 @@ class Baidu(object):
         self.sess.timeout = 30
         with open('cookies', 'r') as cookies:
             self.sess.headers = {
-                "Cookie": cookies.read(),
+                "Cookie": repr(cookies.read()),
                 "User-Agent": (
                     "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36"
                     "(KHTML, like Gecko) Chrome/51.0.2704.84 Safari/537.36")
