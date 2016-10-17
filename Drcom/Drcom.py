@@ -6,9 +6,12 @@ import re
 import sys
 import time
 import sqlite3
-import logging
 import contextlib
 import ConfigParser
+import logging
+
+#from logging import (getLogger, StreamHandler,
+#    Formatter, getLoggerClass, INFO, DEBUG)
 
 import requests
 
@@ -19,19 +22,13 @@ def ignored(*exceptions):
     except:
         pass
 
-def log():
-    """return a log hander"""
-    logging.basicConfig(filename='drcom.log',
-                        filemode='w',
-                        level=logging.INFO,
-                        format='[%(levelname)s] [%(asctime)s]: %(message)s',
-                        datefmt='%d/%b/%y %H:%M:%S')
+def create_logger():
     handler = logging.StreamHandler()
-    handler.setLevel(logging.INFO)
-    formatter = logging.Formatter('[%(levelname)-6s] [%(asctime)s] %(message)s')
-    handler.setFormatter(formatter)
-    logging.getLogger('').addHandler(handler)
-    return logging
+    handler.setLevel(logging.DEBUG)
+    handler.setFormatter(logging.Formatter('[%(asctime)s]: %(message)s'))
+    logger = logging.getLogger('')
+    logger.addHandler(handler)
+    return logger
 
 def read_config(config_path):
     """Read user config from config_path"""
@@ -51,7 +48,7 @@ sys_version = lambda: sys.platform
 
 class Drcom:
 
-    LOG = log()
+    LOG = create_logger()
     host = "http://202.112.208.3/"
     IS_LOGIN = False
     headers = {
@@ -185,15 +182,15 @@ def abu_login(db):
     main.login()
     database = DB(db)
     if main.IS_LOGIN:
-        main.LOG.info("Loged in as count: {0}, password: {1}".format(
+        main.LOG.warning("Loged in as count: {0}, password: {1}".format(
             main.count, main.password))
-        main.LOG.info('Used {0} MBytes, {1} MBytes balanced'.format(
+        main.LOG.warning('Used {0} MBytes, {1} MBytes balanced'.format(
             main.used, main.balance))
     else:
         main.IS_LOGIN = False
         main.LOG.warn('Login failed...')
         database.delete("delete from CUMTB where Sno=?", main.count)
-        main.LOG.info("delete {} from database.".format(main.count))
+        main.LOG.warning("delete {} from database.".format(main.count))
 
     database.close()
     return main.IS_LOGIN, main
