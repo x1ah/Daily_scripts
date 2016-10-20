@@ -76,9 +76,9 @@ class Drcom:
     def http_requests(self, method, action, headers=None, form_data=None,
                       timeout=60):
         if method == "GET":
-            res = self.sess.get(action, timeout=timeout)
+            res = self.sess.get(action)
         elif method == "POST":
-            res = self.sess.post(action, data=form_data, timeout=timeout)
+            res = self.sess.post(action, data=form_data)
         else:
             self.LOG.error("NOT FOUND METHOD {0}".format(method))
         return res
@@ -165,6 +165,7 @@ def get_count_pswd(db):
     database.close()
 
     return select_res
+
 
 def write_conf(count, password):
     if 'linux' in sys_version():
