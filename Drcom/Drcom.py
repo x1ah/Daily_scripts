@@ -89,7 +89,7 @@ class Drcom:
             message_html = self.http_requests("GET", self.host).content
             flow = int(re.findall("flow=\'(\d+)", message_html)[0])
             used = self.calc_flow(flow)
-            self.used , self.balance = used, 25000 - used
+            self.used , self.balance = used, 25600 - used
             return True
 
     def login(self):
@@ -182,7 +182,7 @@ def abu_login(db):
     main = Drcom()
     main.login()
     database = DB(db)
-    if main.IS_LOGIN:
+    if main.IS_LOGIN and main.balance > 4000:
         main.LOG.warning("Loged in as count: {0}, password: {1}".format(
             main.count, main.password))
         main.LOG.warning('Used {0} MBytes, {1} MBytes balanced'.format(
@@ -194,23 +194,22 @@ def abu_login(db):
         main.LOG.warning("delete {} from database.".format(main.count))
 
     database.close()
-    return main.IS_LOGIN, main
+    return main.IS_LOGIN, main, main.balance
 
 def start():
     LOGED_IN = False
     while not LOGED_IN:
         count, password = get_count_pswd("CUMTB.db")
         write_conf(count, password)
-        LOGED_IN, sess = abu_login("CUMTB.db")
-    return LOGED_IN, sess
+        return abu_login("CUMTB.db")
 
 
 if __name__ == "__main__":
     CONTINUE = True
     while CONTINUE:
-        status, sess = start()
+        status, sess, balance = start()
         start_time = time.time()
-        while (time.time() - start_time) < 2700 and CONTINUE:
+        while ((time.time() - start_time) < 2700) and CONTINUE:
             time.sleep(0.5)
             try:
                 sess.get_user_message()
