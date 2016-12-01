@@ -4,7 +4,6 @@
 import os
 import re
 import sys
-import time
 import sqlite3
 import contextlib
 import ConfigParser
@@ -159,7 +158,7 @@ class DB:
 
 def get_count_pswd(db):
     """return count and password from database(db)."""
-    SQL = "select * from CUMTB order by random() limit 1;"
+    SQL = "select * from CUMTB;"
     database = DB(db)
     select_res = database.select(SQL)[0]
     database.close()

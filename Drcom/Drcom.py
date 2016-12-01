@@ -194,11 +194,11 @@ def abu_login(db):
         main.LOG.warning("delete {} from database.".format(main.count))
 
     database.close()
-    return main.IS_LOGIN, main, main.balance
+    return main.IS_LOGIN, main
 
 def start():
     LOGED_IN = False
-    while not LOGED_IN:
+    if not LOGED_IN:
         count, password = get_count_pswd("CUMTB.db")
         write_conf(count, password)
         return abu_login("CUMTB.db")
@@ -207,7 +207,7 @@ def start():
 if __name__ == "__main__":
     CONTINUE = True
     while CONTINUE:
-        status, sess, balance = start()
+        status, sess = start()
         start_time = time.time()
         while ((time.time() - start_time) < 2700) and CONTINUE:
             time.sleep(0.5)
