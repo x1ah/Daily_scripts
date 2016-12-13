@@ -199,9 +199,9 @@ def abu_login(db):
 def start():
     LOGED_IN = False
     if not LOGED_IN:
-        count, password = get_count_pswd("CUMTB.db")
+        count, password = get_count_pswd("/home/x1ah/Repo/Python_projects/Drcom/CUMTB.db")
         write_conf(count, password)
-        return abu_login("CUMTB.db")
+        return abu_login("/home/x1ah/Repo/Python_projects/Drcom/CUMTB.db")
 
 
 if __name__ == "__main__":
