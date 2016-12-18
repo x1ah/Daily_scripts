@@ -13,33 +13,54 @@ header_msg = {
           "{\n    return 0;\n}\n"),
     'scm': ";;;\n",
     "html": "<!DOCTYPE HTML>",
-    'm': ''
+    'm': '',
+    'sh': "#!/bin/bash\n",
+    'java': ''
 }
 
+class ArgsParser:
+    """
+    parser the command arguments
+    """
+    @staticmethod
+    def args_parser():
+        parser = argparse.ArgumentParser(
+            description="""
+            A simple script for add header message when create a new file.
+            """
+        )
+        parser.add_argument('newfile')
+        args = parser.parse_args()
+        return args
 
-def par():
-    parser = argparse.ArgumentParser(
-        description='A script for add script header message'
-    )
-    parser.add_argument('newfile')
-    args = parser.parse_args()
-    return args
 
+class Atouch:
+    """
+    Usage egs:
+        $ chmod +x atouch.py
+        $ ./atouch.py -h
+        $ ./atouch.py foo.py
+        $ ./atouch.py bar.c
+    """
+    def is_file_exists(self, file_path):
+        return True if os.path.exists(file_path) else False
 
-def file_exists(file_path):
-    return True if os.path.exists(file_path) else False
+    def write(self, newfile, model='w'):
+        newfile_attrs = args.newfile.split('.') # newfile's file type
+        with open(newfile, model) as nf:
+            if newfile_attrs[-1] in header_msg:
+                nf.write(header_msg[newfile_attrs[-1]])
 
-
-def main(args):
-    file_path = os.path.join(os.path.dirname(__file__), args.newfile)
-    if file_exists(file_path):
-        print('\t{0} already exists...'.format(args.newfile))
-    else:
-        newfile_attrs = args.newfile.split('.')
-        with open(args.newfile, 'w') as f:
-            if (len(newfile_attrs) == 2) and (newfile_attrs[-1] in header_msg):
-                f.write(header_msg[newfile_attrs[-1]])
+    def main(self, args):
+        file_path = os.path.join(os.path.dirname(__file__), args.newfile)
+        if self.is_file_exists(file_path):
+            print('\t{0} already exists...'.format(args.newfile))
+        elif file_path.endswith("/"):
+            print("No such directory")
+        else:
+            self.write(args.newfile)
 
 if __name__ == '__main__':
-    args = par()
-    main(args)
+    args = ArgsParser.args_parser()
+    atouch = Atouch()
+    atouch.main(args)
