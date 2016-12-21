@@ -3,21 +3,21 @@
 
 import os
 
-import requests
 from bs4 import BeautifulSoup
-from prettytable import PrettyTable
+
+from utils import (Soup, HTTPRequest, table_print, validate_login,
+                   quit, clear, rinput)
 
 
-class score(object):
-    def __init__(self, usrname='0', usrpswd='0', display=True):
+class Score:
+    def __init__(self, usrname='0', usrpswd='0', user_type=u"学生",
+                 display=True):
         self.usrname = usrname
         self.usrpswd = usrpswd
+        self.user_type = user_type
         self.display = display
+        self.http_request = HTTPRequest()
 
-    def Soup(self, session, url):
-        html = session.get(url)
-        soup = BeautifulSoup(html.text, 'lxml')
-        return soup
 
     def login(self):
         '''
@@ -27,55 +27,49 @@ class score(object):
         :return: 登录状态
         '''
         login_url = 'http://219.242.68.33/Login.aspx'
+
         form_data = {
+            "ToolkitScriptManager1": "ToolkitScriptManager1|btnLogin",
             "ToolkitScriptManager1_HiddenField": "",
             "__EVENTTARGET": "",
             "__EVENTARGUMENT": "",
-            "__VIEWSTATE": "/wEPDwUKMTY0Njg4MjEwM2Rkj+Af8kaVOxsefGZECk5PM6rOOYgs0taVhQxQSxoC298=",
+            "__VIEWSTATE": (
+                "/wEPDwULLTEzMzI5MDg5NTdkZA+q8vsWfSKH/YDs"
+                "W+RwQFVd+XJey2nS+KBASrL5sVcV"
+            ),
             "__VIEWSTATEGENERATOR": "C2EE9ABB",
-            "__EVENTVALIDATION": "/wEWCQKK9JioBQLB2tiHDgK1qbSRCwLB9fLCCQKVwf3jAwL7jJeqDQK2yLNyAoyp3LQNAoLch4YM4/7Gzd6qXWcFlpTQVOKRLsJcEeZ1kj5lh7u9AQrHyms=",
+            "__EVENTVALIDATION": (
+                "/wEWCQKBn//oBgLB2tiHDgK1qbSRCwLB9f"
+                "LCCQKVwf3jAwL7jJeqDQK2yLNyAoyp3LQN"
+                "AoLch4YMPGB+WTKjbk2vdv7fTF2wbC+5yb"
+                "bEOCiOGr7YY8J7e8o="
+            ),
             "txtUser": self.usrname,
             "txtPassword": self.usrpswd,
-            "rbLx": "学生",
+            "rbLx": self.user_type,
+            "__ASYNCPOST": "true",
             "btnLogin": " 登 录 "
         }
-        header = {
-            "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.86 Safari/537.36"
-        }
-        self.headers = header
-        s = requests.session()
-        response = s.post(url=login_url, data=form_data, headers=header)
-        response_text = response.text
-        if u'个人资料' in response_text:
-            ifo = '登录成功！'
-            status = s
-        elif u'密码不正确' in response_text:
-            ifo = '密码错误...请重试...'
-            status = False
-        else:
-            ifo = '登录失败...请重试...'
-            status = False
-        if self.display is True:
-            print ifo
-        return status
 
-    def tableprint(self, title, conts):
-        table = PrettyTable(title)
-        table.padding_width = 2
-        if type(conts[0]) is list:
-            [table.add_row(cont) for cont in conts]
-        else:
-            table.add_row(conts)
-        print(table)
 
-    def get_ifo(self, sess):
+        response = self.http_request.post(login_url, data=form_data).text
+        return validate_login(
+            response,
+            validator={
+                "pageRedirect": [True, "登录成功"],
+                u"密码不正确": [False, "密码错误"],
+            },
+            default=[False, "登录失败"]
+        )
+
+    def get_info(self):
         '''
         通过登录会话session获取学生信息
         :param sess:
         :return: 学生信息
         '''
         ifo_url = 'http://219.242.68.33/xuesheng/xsxx.aspx'
-        soup = self.Soup(sess, ifo_url)
+        soup = Soup(self.http_request.session, ifo_url)
         data = {}
         data['a.姓名'] = soup.find(id="ctl00_ContentPlaceHolder1_lblXm").text
         data['b.身份证号'] = soup.find(id="ctl00_ContentPlaceHolder1_lblSfz").text
@@ -85,13 +79,13 @@ class score(object):
         if self.display is True:
             tabletitle = [item[2:] for item in sorted(data.keys())]
             cont = [data[item] for item in sorted(data.keys())]
-            self.tableprint(tabletitle, cont)
+            table_print(tabletitle, cont)
 
         return data
 
-    def get_score(self, sess):
+    def get_score(self):
         score_url = 'http://219.242.68.33/xuesheng/cjcx.aspx'
-        soup = self.Soup(sess, score_url)
+        soup = Soup(self.http_request.session, score_url)
         all_scoreifo = [item.text.strip() for item in soup.find_all('td')]
         indexs = all_scoreifo[0::10]
         years = all_scoreifo[2::10]
@@ -99,7 +93,8 @@ class score(object):
         units = all_scoreifo[5::10]
         natures = all_scoreifo[7::10]
         courses = all_scoreifo[8::10]
-        scores = all_scoreifo[9::10]
+        scores = map(lambda x: ' / '.join(x),
+                     [item.split('\n') for item in all_scoreifo[9::10]])
         average = soup.find(id="ctl00_ContentPlaceHolder1_lblpjcj").text
         total = soup.find(id="ctl00_ContentPlaceHolder1_lblKcms").text
         credit = soup.find( id="ctl00_ContentPlaceHolder1_lblXfs").text
@@ -111,20 +106,52 @@ class score(object):
                 zip(indexs, years, terms, units, natures, courses, scores):
             temp = [index, course.strip(), score.replace('\n', ''), unit, year, term, nature]
             conts.append(temp)
-        self.tableprint(tabletitle, conts)
-        self.tableprint(['平均成绩','课程门数', '已获得学分'], [[average, total, credit]])
+        if self.display:
+            table_print(tabletitle, conts)
+            table_print(['平均成绩','课程门数', '已获得学分'], [[average, total, credit]])
+        return conts
 
-    def elective(self, sess):
+    def elective(self):
+        """
+        获取选修课信息
+        """
         eleurl = 'http://219.242.68.33/xuesheng/xsxk.aspx'
         form_data= {
             "__EVENTTARGET": "",
             "__EVENTARGUMENT": "",
-            "__VIEWSTATE": "/wEPDwULLTE1NDU0NjAxMDUPZBYCZg9kFgICAw9kFgICAQ9kFgICAw8QDxYGHg1EYXRhVGV4dEZpZWxkBQRrenNtHg5EYXRhVmFsdWVGaWVsZAUDa3poHgtfIURhdGFCb3VuZGdkEBUdFzE1LTE256ys5LqM5a2m5pyf5YWs6YCJFzE1LTE256ys5LiA5a2m5pyf5YWs6YCJFzE0LTE156ys5LqM5a2m5pyf5YWs6YCJFzE0LTE156ys5LiA5a2m5pyf5YWs6YCJFzEzLTE056ys5LqM5a2m5pyf5YWs6YCJFzEzLTE056ys5LiA5a2m5pyf5YWs6YCJGeiLseivree7vOWQiOaKgOiDveWfueWFuzEXMTItMTPnrKzkuozlrabmnJ/lhazpgIkZ6Iux6K+t57u85ZCI5oqA6IO95Z+55YW7MRcxMi0xM+esrOS4gOWtpuacn+WFrOmAiRcxMS0xMuesrOS6jOWtpuacn+WFrOmAiRcxMS0xMuesrOS4gOWtpuacn+WFrOmAiRcxMC0xMeesrOS6jOWtpuacn+WFrOmAiRcxMC0xMeesrOS4gOWtpuacn+WFrOmAiRcwOS0xMOesrOS6jOWtpuacn+WFrOmAiRcwOS0xMOesrOS4gOWtpuacn+WFrOmAiRcwOC0wOeesrOS6jOWtpuacn+WFrOmAiRcwOC0wOeesrOS4gOWtpuacn+WFrOmAiRcwNy0wOOesrOS6jOWtpuacn+WFrOmAiRcwNy0wOOesrOS4gOWtpuacn+WFrOmAiRcwNi0wN+esrOS6jOWtpuacn+WFrOmAiRcwNi0wN+esrOS4gOWtpuacn+WFrOmAiRcwNS0wNuesrOS6jOWtpuacn+WFrOmAiRcwNS0wNuesrOS4gOWtpuacn+WFrOmAiRcwNC0wNeesrOS6jOWtpuacn+WFrOmAiRcwNC0wNeesrOS4gOWtpuacn+WFrOmAiRcwMy0wNOesrOS6jOWtpuacn+WFrOmAiRcwMy0wNOesrOS4gOWtpuacn+WFrOmAiRcwMi0wM+esrOS6jOWtpuacn+WFrOmAiRUdAzMyMQMzMTgDMzE0AzMxMwMzMDIDMjQzAzI0MgMyNDEDMjQwAzIzOQMyMzgDMjM3AzIzNgMyMzUDMjM0AzIzMwMyMzIDMjMxAzIzMAMyMjkDMjI4AzIyNwMyMjYDMjE2AzIxNQMyMTQDMjEzAzIxMgMyMTAUKwMdZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2cWAWZkZBgWDkNmM5ksFZPYJS+CXe3IihlDoFim1X/o3cfNS5fN",
+            "__VIEWSTATE": (
+                "/wEPDwULLTE1NDU0NjAxMDUPZBYCZg9kFgICAw9kFgICAQ9kFgIC"
+                "Aw8QDxYGHg1EYXRhVGV4dEZpZWxkBQRrenNtHg5EYXRhVmFsdWVG"
+                "aWVsZAUDa3poHgtfIURhdGFCb3VuZGdkEBUdFzE1LTE256ys5LqM"
+                "5a2m5pyf5YWs6YCJFzE1LTE256ys5LiA5a2m5pyf5YWs6YCJFzE0"
+                "LTE156ys5LqM5a2m5pyf5YWs6YCJFzE0LTE156ys5LiA5a2m5pyf"
+                "5YWs6YCJFzEzLTE056ys5LqM5a2m5pyf5YWs6YCJFzEzLTE056ys"
+                "5LiA5a2m5pyf5YWs6YCJGeiLseivree7vOWQiOaKgOiDveWfueWF"
+                "uzEXMTItMTPnrKzkuozlrabmnJ/lhazpgIkZ6Iux6K+t57u85ZCI"
+                "5oqA6IO95Z+55YW7MRcxMi0xM+esrOS4gOWtpuacn+WFrOmAiRcx"
+                "MS0xMuesrOS6jOWtpuacn+WFrOmAiRcxMS0xMuesrOS4gOWtpuac"
+                "n+WFrOmAiRcxMC0xMeesrOS6jOWtpuacn+WFrOmAiRcxMC0xMees"
+                "rOS4gOWtpuacn+WFrOmAiRcwOS0xMOesrOS6jOWtpuacn+WFrOmA"
+                "iRcwOS0xMOesrOS4gOWtpuacn+WFrOmAiRcwOC0wOeesrOS6jOWt"
+                "puacn+WFrOmAiRcwOC0wOeesrOS4gOWtpuacn+WFrOmAiRcwNy0w"
+                "OOesrOS6jOWtpuacn+WFrOmAiRcwNy0wOOesrOS4gOWtpuacn+WF"
+                "rOmAiRcwNi0wN+esrOS6jOWtpuacn+WFrOmAiRcwNi0wN+esrOS4"
+                "gOWtpuacn+WFrOmAiRcwNS0wNuesrOS6jOWtpuacn+WFrOmAiRcw"
+                "NS0wNuesrOS4gOWtpuacn+WFrOmAiRcwNC0wNeesrOS6jOWtpuac"
+                "n+WFrOmAiRcwNC0wNeesrOS4gOWtpuacn+WFrOmAiRcwMy0wNOes"
+                "rOS6jOWtpuacn+WFrOmAiRcwMy0wNOesrOS4gOWtpuacn+WFrOmA"
+                "iRcwMi0wM+esrOS6jOWtpuacn+WFrOmAiRUdAzMyMQMzMTgDMzE0"
+                "AzMxMwMzMDIDMjQzAzI0MgMyNDEDMjQwAzIzOQMyMzgDMjM3AzIz"
+                "NgMyMzUDMjM0AzIzMwMyMzIDMjMxAzIzMAMyMjkDMjI4AzIyNwMy"
+                "MjYDMjE2AzIxNQMyMTQDMjEzAzIxMgMyMTAUKwMdZ2dnZ2dnZ2dn"
+                "Z2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2cWAWZkZBgWDkNmM5ksFZPYJS+C"
+                "Xe3IihlDoFim1X/o3cfNS5fN"
+            ),
             "__VIEWSTATEGENERATOR": "E7E695A4",
             "ctl00$ContentPlaceHolder1$drplKcz": '321',
             "ctl00$ContentPlaceHolder1$btnYxkc": "查 看"
         }
-        ss = sess.post(eleurl, data=form_data, headers=self.headers)
+        ss = self.http_request.post(eleurl, data=form_data)
         soup = BeautifulSoup(ss.text, 'lxml')
         all_num = soup.find_all('td')
         all_item = [item.text for item in all_num]
@@ -137,17 +164,10 @@ class score(object):
         for index, time, course, teacher in zip(indexs, times, courses, teachers):
             temp = [index, time, course, teacher]
             conts.append(temp)
-        self.tableprint(tabletitle, conts)
+        if self.display:
+            table_print(tabletitle, conts)
 
-    def Quit(self):
-        '''
-        退出
-        :return: None
-        '''
-        print 'Quited...'
-        os.system('clear')
-
-    def main(self):
+    def cli(self):
         prompt = '''
         +===========================+
         |   [0]查成绩               |
@@ -158,40 +178,39 @@ class score(object):
         |   [5]安全退出             |
         +===========================+
         >>> '''
-        self.usrname = raw_input('学号: ')
-        self.usrpswd = raw_input('密码: 00000000\b\b\b\b\b\b\b\b')
-        sess = self.login()
-        if sess:
+        self.usrname = rinput('学号: ')
+        self.usrpswd = rinput('密码: 00000000\b\b\b\b\b\b\b\b')
+
+        status = self.login()
+        if status[0]:
             choice = True
             choice_dict = {
                 '0': self.get_score,
-                '1': self.get_ifo,
+                '1': self.get_info,
                 '2': self.elective,
+                '3': self.cli,
+                '4': clear,
+                '5': quit
             }
             while choice is True:
-#                try:
-                usr_choice = raw_input('\r'+prompt).strip()[0]
+                usr_choice = rinput('\r'+prompt).strip()[0]
                 os.system('clear')
                 if usr_choice in choice_dict:
-                    choice_dict[usr_choice](sess)
-                elif usr_choice == '3':
-                    self.main()
-                    choice = False
-                elif usr_choice == '4':
-                    os.system('clear')
-                elif usr_choice == '5':
-                    self.Quit()
-                    choice = False
+                    choice_dict.get(usr_choice)()
+                    choice = usr_choice not in "35"
                 else:
                     print 'Input incorrect..again!'
         else:
-            cho = raw_input('[q] to Quit.')
-            if cho != 'q':
-                self.main()
+            print(status[1])
+
+            cho = rinput('Any key to continue, [q] to quit.')
+
+            if cho == 'q':
+                quit()
             else:
-                self.Quit()
+                self.cli()
 
 if __name__ == '__main__':
     os.system('clear')
-    start = score()
-    start.main()
+    start = Score()
+    start.cli()
