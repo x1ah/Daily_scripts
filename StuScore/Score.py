@@ -199,7 +199,7 @@ class Score:
                     choice_dict.get(usr_choice)()
                     choice = usr_choice not in "35"
                 else:
-                    print 'Input incorrect..again!'
+                    print('Input incorrect..again!')
         else:
             print(status[1])
 
