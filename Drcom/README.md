@@ -1,7 +1,6 @@
-usage:(only for Python2)
-又干了一件羞耻的事情.
+Python2/3
 
 ```python
 # Linux / Windows
-$ python Drcom.py
+$ python manage.py run
 ```
