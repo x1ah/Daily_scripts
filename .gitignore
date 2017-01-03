@@ -13,4 +13,4 @@
 /Drcom/nohup.out
 *.db
 *.out
-*.db
+Drcom/*.json

@@ -17,21 +17,34 @@ char * binl2hex (ele * binarray);
 char * calcMD5 (char * seq);
 int count_cat (char * pid, char * calg, char * count);
 int write_en_pswd (char *count, char *pswd, char * enpswd);
+char *enc(char* pswd);
+
 
 int main (int argc, char * argv[])
 {
     /* argv[1]: origin password, and after pswd_cat, password change to pid */
     char pid[] = "1";
     char calg[] = "12345678";
+    char *tes;
     if (argc != 3)
     {
         printf ("Usage: %s [student num] [origin password]\n", argv[0]);
         exit (1);
     }
     count_cat (pid, calg, argv[2]);
+    tes = strcat(calcMD5(pid), "123456781");
     write_en_pswd (argv[1], argv[2], strcat(calcMD5(pid), "123456781"));
-
     return 0;
+}
+
+char *enc(char* pswd) {
+    char pid[] = "1";
+    char calg[] = "12345678";
+    count_cat (pid, calg, pswd);
+    printf("%s ", pid);
+    printf("%s ", calg);
+    printf("%s ", pswd);
+    return strcat(calcMD5(pid), "123456781");
 }
 
 int write_en_pswd (char *count, char *pswd, char * enpswd)
@@ -43,10 +56,12 @@ int write_en_pswd (char *count, char *pswd, char * enpswd)
         exit(1);
     }
     fprintf (pswd_file_pointer,
-            "[userinfo]\ncount=%s\npassword=%s\nenpassword=%s\n",
+            "{\"count\":\"%s\",\"password\": \"%s\",\"enpassword\": \"%s\"}",
             count, pswd, enpswd);
-    if (fclose (pswd_file_pointer) != 0)
+    if (fclose(pswd_file_pointer) != 0)
         fprintf (stderr, "Error closeing file\n");
+    printf("{\"count\":\"%s\",\"password\": \"%s\",\"enpassword\": \"%s\"}",
+            count, pswd, enpswd);
     return 0;
 }
 
