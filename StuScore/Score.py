@@ -26,7 +26,7 @@ class Score:
         :param pswd:
         :return: 登录状态
         '''
-        login_url = 'http://219.242.68.33/Login.aspx'
+        login_url = 'http://219.242.68.34/Login.aspx'
 
         form_data = {
             "ToolkitScriptManager1": "ToolkitScriptManager1|btnLogin",
@@ -34,15 +34,16 @@ class Score:
             "__EVENTTARGET": "",
             "__EVENTARGUMENT": "",
             "__VIEWSTATE": (
-                "/wEPDwULLTEzMzI5MDg5NTdkZA+q8vsWfSKH/YDs"
-                "W+RwQFVd+XJey2nS+KBASrL5sVcV"
+                "/wEPDwULLTEzMzI5MDg5NTdkZLijHQ2AP8RlCsoyMA5wGxkp7N/Eu"
+                "+tNRGRIjssUUJzA"
             ),
             "__VIEWSTATEGENERATOR": "C2EE9ABB",
             "__EVENTVALIDATION": (
-                "/wEWCQKBn//oBgLB2tiHDgK1qbSRCwLB9f"
-                "LCCQKVwf3jAwL7jJeqDQK2yLNyAoyp3LQN"
-                "AoLch4YMPGB+WTKjbk2vdv7fTF2wbC+5yb"
-                "bEOCiOGr7YY8J7e8o="
+                "/wEdAAkh8ZU3Gnyvn5kXEKbCJUIRDFTzKcXJqLg+OeJ6QAEa2nY2+"
+                "Mc6SrnAqio3oCKbxYah3xa5rLP/Bn9R8gnPYyv9Y/jNR+V3Y2V63r"
+                "/uGJ6o3e8y1uAcWHw+joLTxl+mj+XJMG57d9TuD5oRZdFmOwSdT3X"
+                "UHy040LsOHhWYhzfBA6KeKEbp39eHc9mbdvkCgxBZmNzqpPs6SHyh"
+                "2ECtT46MMRcPc39Fn2KuRL/PbaoRvw=="
             ),
             "txtUser": self.usrname,
             "txtPassword": self.usrpswd,
@@ -56,10 +57,10 @@ class Score:
         return validate_login(
             response,
             validator={
-                "pageRedirect": [True, "登录成功"],
-                u"密码不正确": [False, "密码错误"],
+                "pageRedirect": {'status': True, 'info': "登录成功"},
+                u"密码不正确": {'status': True, 'info': "密码错误"},
             },
-            default=[False, "登录失败"]
+            default={'status': False, 'info': "登录失败"}
         )
 
     def get_info(self):
@@ -182,7 +183,7 @@ class Score:
         self.usrpswd = rinput('密码: 00000000\b\b\b\b\b\b\b\b')
 
         status = self.login()
-        if status[0]:
+        if status['status']:
             choice = True
             choice_dict = {
                 '0': self.get_score,
@@ -201,7 +202,7 @@ class Score:
                 else:
                     print('Input incorrect..again!')
         else:
-            print(status[1])
+            print(status['info'])
 
             cho = rinput('Any key to continue, [q] to quit.')
 
