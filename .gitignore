@@ -14,3 +14,5 @@
 *.db
 *.out
 Drcom/*.json
+flask_upload_file_service/uploads/*
+
