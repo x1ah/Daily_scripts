@@ -1,9 +1,20 @@
-{% for file in file_lst_view %}
-<div>
-  <a href="/file/{{ file }}">{{ file }}</a>
-</div>
-{% endfor %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <title>file list</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
+  </head>
 
-{% for message in messages %}
-<p>{{ message }}</p>
-{% endfor %}
+  <body>
+    <h1>文件列表</h1>
+    <div class='filelstbox'>
+      {% for file in file_lst_view %}
+      <div class='inb'>
+        <a href="/file/{{ file }}" class='filelst'>{{ file }}</a>
+      </div>
+      {% endfor %}
+    </div>
+  </body>
+</html>
+

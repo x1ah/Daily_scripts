@@ -1,4 +1,4 @@
-.body {
+body {
   background: #E8E9EC !important;
 }
 
@@ -10,4 +10,40 @@
   border: 2px dashed #0087F7 !important;
   padding: 70px;
   font-size: 30px;
+}
+
+.backhome {
+  margin: 30px;
+  text-align: center;
+}
+
+.backhome a {
+  text-decoration: none;
+  font-style: italic;
+  color: steelblue;
+  font-size: 20px;
+
+}
+
+.filelstbox {
+  margin: 50px;
+}
+
+.filelstbox a {
+  text-decoration: none;
+  color: midnightblue;
+  font-style: italic;
+  font-size: 20px;
+}
+
+.filelstbox a:hover {
+  color: blue;
+}
+
+.inb {
+  margin-bottom: 10px;
+}
+
+h1 {
+  margin: 30px;
 }

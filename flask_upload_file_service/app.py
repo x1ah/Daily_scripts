@@ -5,7 +5,7 @@ import os
 
 from flask import (Flask, request, flash, redirect, send_from_directory,
                    render_template, url_for)
-from flask_uploads import UploadSet, configure_uploads, patch_request_class
+from flask_uploads import UploadSet, configure_uploads, patch_request_class, ALL
 from werkzeug import SharedDataMiddleware
 
 basedir = os.getcwd()
@@ -15,7 +15,7 @@ app.config['FILE_PATH'] = os.path.join(basedir, 'uploads')
 app.config['DEBUG'] = True
 app.config['SECRET_KEY'] = 'ouahflnl'
 
-upload_file = UploadSet()
+upload_file = UploadSet('files', ALL)
 configure_uploads(app, upload_file)
 patch_request_class(app, 5*1024*1024*1024*1024)
 
