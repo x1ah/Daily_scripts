@@ -1,0 +1,13 @@
+.body {
+  background: #E8E9EC !important;
+}
+
+.custom {
+  margin: 30px;
+}
+
+.customdz {
+  border: 2px dashed #0087F7 !important;
+  padding: 70px;
+  font-size: 30px;
+}
