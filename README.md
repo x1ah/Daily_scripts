@@ -19,9 +19,10 @@
 - Dailyv2ex
     - v2ex 自动签到领金币
 - Baidu
-    - 百度贴吧 自动签到，由于验证码问题，去除帐号密码登录，暂时只支持cookies登录
+    - 百度贴吧 自动签到，**由于验证码问题，去除帐号密码登录，暂时只支持cookies登录**
     - TODO
         - [ ] 寻找新API，获取所有关注吧
+        - [ ] 验证码
 - Drcom
     - [Drcom Web surf happyly](https://github.com/x1ah/Daily_scripts/tree/master/Drcom)
 - DownloadMV

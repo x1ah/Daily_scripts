@@ -1,1 +1,8 @@
->Python code snippets usually are in common use.
+- `create_count_and_grant.sql` 
+    - 创建一个 MySQL 用户以及新建一张表，把表所有权限授予该用户
+- `flask_file_serve.py`
+    - 提供文件访问服务，Flask 实现
+- `flask_form_template.jinja`
+    - jinja 模板引擎表单写法
+- `multiprocessing_dummy_pool.py`
+    - `multiprocessing` 进程池
