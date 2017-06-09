@@ -1,0 +1,25 @@
+# python code
+from flask_wtf import FlaskForm
+from wtforms import StringField
+from wtforms.validators import Required
+
+class DemoForm(FlaskForm):
+    email = StringField("Email", validators=[Required()])
+    password = PasswordField("Password", validators=[Required()])
+    submit = SubmitField("Demo")
+
+@app.route("/demo", methods=["GET", "POST"])
+def demo():
+    form = DemoForm()
+    render_template("demo.html", form=form)
+
+
+# html template
+<form class="form" method="post">
+    {{ form.hidden_tag() }}
+    {# 或者form.csrf_token #}
+    {{ form.email.label }}{{ form.email() }}
+    {{ form.password.label }}{{ form.password() }}
+    {{ form.submit() }}
+</form>
+

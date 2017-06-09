@@ -12,12 +12,17 @@
         - [ ] 对指定人/群调用图灵API自动回复
         - [ ] 改善登录二维码生成算法，缩小二维码尺寸
 
+- CodeSnippets
+    - 开发时一些通用的代码片段
+- flask_upload_file_service
+    - 一个简单的局域网共享文件服务
 - Dailyv2ex
-    - [v2ex 自动签到领金币](http://x1ah.github.io/2016/05/15/sign-V2EX/)
+    - v2ex 自动签到领金币
 - Baidu
-    - [百度贴吧 自动签到](https://x1ah.github.io/2016/06/18/sign-Baidu-Tieba/)
+    - 百度贴吧 自动签到，**由于验证码问题，去除帐号密码登录，暂时只支持cookies登录**
     - TODO
         - [ ] 寻找新API，获取所有关注吧
+        - [ ] 验证码
 - Drcom
     - [Drcom Web surf happyly](https://github.com/x1ah/Daily_scripts/tree/master/Drcom)
 - DownloadMV

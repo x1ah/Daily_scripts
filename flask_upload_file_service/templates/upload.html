@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Upload</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dropzone.css') }}">
+  </head>
+
+  <body style="background: #E8E9EC">
+    <div class="custom">
+      <form action="{{ url_for('upload') }}" class="dropzone customdz" method="POST" enctype="multipart/form-data">
+      </form>
+      <script src="{{ url_for('static', filename='js/dropzone.js') }}"></script>
+    </div>
+    <div class="backhome">
+      <a href="{{ url_for('index') }}">返回</a>
+    </div>
+  </body>
+</html>
