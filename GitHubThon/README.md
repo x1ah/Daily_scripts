@@ -1,4 +1,4 @@
-> 懒，万恶之源，创造之始.
+## 使用
 
 ```python
 # marathon.json
