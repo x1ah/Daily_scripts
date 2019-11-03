@@ -2,7 +2,7 @@ amqp==2.1.4
 billiard==3.5.0.2
 celery==4.0.2
 click==6.7
-Flask==0.12.1
+Flask==1.0
 Flask-Uploads==0.2.1
 itsdangerous==0.24
 Jinja2==2.9.6
