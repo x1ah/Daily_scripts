@@ -38,7 +38,7 @@ class InsPic:
         self.image_path = self.path = self.image_url.split('?')[0][-14:]
         with open(self.image_path, 'w') as image:
             image_content = requests.get(self.image_url,
-                                         proxies=self.proxy).content
+                                         proxies=self.proxy, timeout=30).content
             image.write(image_content)
 
     def run(self):
