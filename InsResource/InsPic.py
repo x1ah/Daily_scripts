@@ -30,7 +30,7 @@ class InsPic:
         self.path = path
 
     def parse(self):
-        html = requests.get(self.url, proxies=self.proxy).text
+        html = requests.get(self.url, proxies=self.proxy, timeout=30).text
         self.image_url = re.findall("og:image.+=\"(.+)\"", html)[0]
         return self.image_url or False
 
@@ -38,7 +38,7 @@ class InsPic:
         self.image_path = self.path = self.image_url.split('?')[0][-14:]
         with open(self.image_path, 'w') as image:
             image_content = requests.get(self.image_url,
-                                         proxies=self.proxy).content
+                                         proxies=self.proxy, timeout=30).content
             image.write(image_content)
 
     def run(self):
